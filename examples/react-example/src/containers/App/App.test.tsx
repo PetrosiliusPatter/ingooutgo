@@ -1,3 +1,3 @@
-describe.skip('App', () => {
-    it.todo('should render');
-});
+describe.skip("App", () => {
+  it.todo("should render")
+})

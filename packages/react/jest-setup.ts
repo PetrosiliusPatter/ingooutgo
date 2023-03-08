@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom';
-import { matchers } from '@emotion/jest';
+import "@testing-library/jest-dom"
+import { matchers } from "@emotion/jest"
 
-expect.extend(matchers);
+expect.extend(matchers)
 
-Element.prototype.scrollTo = jest.fn();
+Element.prototype.scrollTo = jest.fn()

@@ -1,25 +1,25 @@
-name: Nodl CI
+name: IngoOutgo CI
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [19.x]
+    strategy:
+      matrix:
+        node-version: [19.x]
 
-        steps:
-            - uses: actions/checkout@v3
-            - name: Use Node.js ${{matrix.node-version}}
-              uses: actions/setup-node@v3
-              with:
-                  node-version: ${{matrix.node-version}}
-            - run: yarn
-            - run: yarn build
-            - run: yarn run test
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+      - run: yarn
+      - run: yarn build
+      - run: yarn run test

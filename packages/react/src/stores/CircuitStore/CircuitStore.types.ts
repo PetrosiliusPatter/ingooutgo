@@ -1,14 +1,14 @@
-import { Node } from '@nodl/core';
+import { Node } from "@ingooutgo/core"
 
-import { CircuitStore } from './CircuitStore';
+import { CircuitStore } from "./CircuitStore"
 
 export type MousePosition = {
-    x: number;
-    y: number;
-};
+  x: number
+  y: number
+}
 
-export type NodeWithPosition = [Node, { x: number; y: number }];
+export type NodeWithPosition = [Node, { x: number; y: number }]
 
 export type StoreProviderValue = {
-    store: CircuitStore;
-};
+  store: CircuitStore
+}

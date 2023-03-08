@@ -1,1 +1,1 @@
-export type NodeData = Record<string, any>;
+export type NodeData = Record<string, any>

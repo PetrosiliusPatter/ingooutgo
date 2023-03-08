@@ -1,39 +1,39 @@
 {
-    "name": "nodl",
-    "version": "0.1.0",
-    "description": "A React-library for building node-based applications.",
-    "main": "build/index.js",
-    "private": true,
-    "scripts": {
-        "test": "yarn workspaces run test",
-        "build": "yarn workspaces run build",
-        "prepare": "husky install"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/emilwidlund/nodl.git"
-    },
-    "keywords": [],
-    "author": "Emil Widlund",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/emilwidlund/nodl/issues"
-    },
-    "homepage": "https://github.com/emilwidlund/nodl#readme",
-    "dependencies": {
-        "eslint-import-resolver-typescript": "^3.5.1",
-        "eslint-plugin-import": "^2.26.0"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.37.0",
-        "@typescript-eslint/parser": "^5.37.0",
-        "eslint": "^8.23.1",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-plugin-unused-imports": "^2.0.0",
-        "husky": "^8.0.3"
-    },
-    "workspaces": [
-        "packages/core",
-        "packages/react"
-    ]
+  "name": "ingooutgo",
+  "version": "0.1.0",
+  "description": "A React-library for building node-based applications.",
+  "main": "build/index.js",
+  "private": true,
+  "scripts": {
+    "test": "yarn workspaces run test",
+    "build": "yarn workspaces run build",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petrosiliuspatter/ingooutgo.git"
+  },
+  "keywords": [],
+  "author": "Anton von Raumer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/petrosiliuspatter/ingooutgo/issues"
+  },
+  "homepage": "https://github.com/petrosiliuspatter/ingooutgo#readme",
+  "dependencies": {
+    "eslint-import-resolver-typescript": "^3.5.1",
+    "eslint-plugin-import": "^2.26.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.23.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "husky": "^8.0.3"
+  },
+  "workspaces": [
+    "packages/core",
+    "packages/react"
+  ]
 }

@@ -1,13 +1,13 @@
 module.exports = {
-    moduleNameMapper: {
-        '^(\\.{1,2}/.*)\\.js$': '$1'
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+  },
+  transform: {
+    "^.+\\.tsx?$": ["ts-jest"],
+  },
+  globals: {
+    "ts-jest": {
+      tsConfig: "tsconfig.json",
     },
-    transform: {
-        '^.+\\.tsx?$': ['ts-jest']
-    },
-    globals: {
-        'ts-jest': {
-            tsConfig: 'tsconfig.json'
-        }
-    }
-};
+  },
+}

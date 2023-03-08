@@ -1,6 +1,6 @@
-# @nodl/core
+# @ingooutgo/core
 
-The core implementation of the Nodl framework.
+The core implementation of the IngoOutgo framework.
 
 ### Getting Started
 
@@ -8,13 +8,13 @@ The core implementation of the Nodl framework.
 
 ```
 # Using NPM
-npm install @nodl/core
+npm install @ingooutgo/core
 
 # Using Yarn
-yarn add @nodl/core
+yarn add @ingooutgo/core
 
 # Using Bun
-bun install @nodl/core
+bun install @ingooutgo/core
 ```
 
 #### Additional dependencies
@@ -41,70 +41,46 @@ Nodes are units that consists of inputs and outputs. They're conceptually very s
 An Addition Node may for instance have two inputs and a single output, which computes the sum of the inputs.
 
 ```typescript
-import { z } from 'zod';
-import { Node, Input, Output } from '@nodl/core';
-import { combineLatest, map } from 'rxjs';
+import { z } from "zod"
+import { Node, Input, Output } from "@ingooutgo/core"
+import { combineLatest, map } from "rxjs"
 
 /** Declare a zod schema for value validation */
-const NumberSchema = z.number();
+const NumberSchema = z.number()
 
 class Addition extends Node {
-    inputs = {
-        a: new Input({ name: 'A', type: NumberSchema, defaultValue: 0 }),
-        b: new Input({ name: 'B', type: NumberSchema, defaultValue: 0 })
-    };
+  inputs = {
+    a: new Input({ name: "A", type: NumberSchema, defaultValue: 0 }),
+    b: new Input({ name: "B", type: NumberSchema, defaultValue: 0 }),
+  }
 
-    outputs = {
-        output: new Output({
-            name: 'Output',
-            type: NumberSchema,
-            observable: combineLatest([this.inputs.a, this.inputs.b]).pipe(
-                map(inputs => inputs.reduce((sum, value) => sum + value), 0)
-            )
-        })
-    };
+  outputs = {
+    output: new Output({
+      name: "Output",
+      type: NumberSchema,
+      observable: combineLatest([this.inputs.a, this.inputs.b]).pipe(
+        map((inputs) => inputs.reduce((sum, value) => sum + value), 0)
+      ),
+    }),
+  }
 }
 ```
 
 ### Example
 
 ```typescript
-import { z } from 'zod';
-import { Node, Input, Output } from '@nodl/core';
-import { combineLatest, map } from 'rxjs';
-
-/** Declare a zod schema for value validation */
-const NumberSchema = z.number();
-
-class Addition extends Node {
-    inputs = {
-        a: new Input({ name: 'A', type: NumberSchema, defaultValue: 0 }),
-        b: new Input({ name: 'B', type: NumberSchema, defaultValue: 0 })
-    };
-
-    outputs = {
-        output: new Output({
-            name: 'Output',
-            type: NumberSchema,
-            observable: combineLatest([this.inputs.a, this.inputs.b]).pipe(
-                map(inputs => inputs.reduce((sum, value) => sum + value), 0)
-            )
-        })
-    };
-}
-
-/** Declare 3 addition nodes */
-const additionNode1 = new Addition();
-const additionNode2 = new Addition();
-const additionNode3 = new Addition();
+/** Declare 3 addition nodes (see above)*/
+const additionNode1 = new Addition()
+const additionNode2 = new Addition()
+const additionNode3 = new Addition()
 
 /** Connect them together */
-additionNode1.outputs.output.connect(additionNode3.inputs.a);
-additionNode2.outputs.output.connect(additionNode3.inputs.b);
+additionNode1.outputs.output.connect(additionNode3.inputs.a)
+additionNode2.outputs.output.connect(additionNode3.inputs.b)
 
 /**
  * The output of AdditionNode3 will fire with a new sum
  * everytime the inputs of AdditionNode1 and AdditionNode2 changes
  */
-additionNode3.outputs.output.subscribe(console.log);
+additionNode3.outputs.output.subscribe(console.log)
 ```

@@ -1,20 +1,20 @@
-import { Input, Node, Output } from '@nodl/core';
-import { DraggableProps } from 'react-draggable';
+import { Input, Node, Output } from "@ingooutgo/core"
+import { DraggableProps } from "react-draggable"
 
 export type NodeProps = {
-    node: Node;
-    windowComponent?: (node: Node) => JSX.Element;
-    actions?: NodeActionProps[];
-    className?: string;
-    disabled?: boolean;
-} & Partial<DraggableProps>;
+  node: Node
+  windowComponent?: (node: Node) => JSX.Element
+  actions?: NodeActionProps[]
+  className?: string
+  disabled?: boolean
+} & Partial<DraggableProps>
 
 export type NodeActionProps = {
-    color?: string;
-    onClick(e: React.MouseEvent<HTMLElement, MouseEvent>): void;
-};
+  color?: string
+  onClick(e: React.MouseEvent<HTMLElement, MouseEvent>): void
+}
 
 export type NodePortsProps = {
-    ports: Input<unknown>[] | Output<unknown>[];
-    isOutputWrapper?: boolean;
-};
+  ports: Input<unknown>[] | Output<unknown>[]
+  isOutputWrapper?: boolean
+}
