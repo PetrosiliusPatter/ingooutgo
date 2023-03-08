@@ -4,27 +4,31 @@ import { v4 as uuid } from "uuid"
 import { z } from "zod"
 
 import { Connection } from "../Connection/Connection"
-import { IInputProps } from "./Input.types"
+import { FieldComponent } from "../FieldComponent"
+import { IInputProps } from "./types"
 
-export class Input<TValue = any> extends BehaviorSubject<TValue> {
+export class Input<ZS extends z.Schema> extends BehaviorSubject<z.infer<ZS>> {
   /** Identifier */
   public id: string = uuid()
   /** Name */
   public name: string
   /** Type */
-  public type: z.Schema
+  public type: ZS
   /** Default Value */
-  public defaultValue: TValue
+  public defaultValue: z.infer<ZS>
   /** Associated Connection */
-  public connection: Connection<TValue> | null
+  public connection: Connection<ZS> | null
 
-  constructor(props: IInputProps<TValue>) {
+  public component?: FieldComponent<ZS>
+
+  constructor(props: IInputProps<ZS>) {
     super(props.defaultValue)
 
     this.name = props.name || "Untitled"
     this.type = props.type
     this.defaultValue = props.defaultValue
     this.connection = null
+    this.component = props.component
 
     makeObservable(this, {
       id: observable,
@@ -32,6 +36,7 @@ export class Input<TValue = any> extends BehaviorSubject<TValue> {
       type: observable,
       defaultValue: observable,
       connection: observable,
+      component: observable,
       connected: computed,
       dispose: action,
     })

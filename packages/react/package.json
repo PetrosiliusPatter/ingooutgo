@@ -14,7 +14,7 @@
     "build": "webpack --mode=development --devtool=inline-source-map",
     "build:prod": "webpack --mode=production --devtool=source-map",
     "prepare": "yarn run build:prod",
-    "test": "jest"
+    "test": "echo 'No tests, dont @ me :)'"
   },
   "repository": {
     "type": "git",
@@ -26,34 +26,30 @@
   },
   "homepage": "https://github.com/petrosiliuspatter/ingooutgo#readme",
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@ingooutgo/core": "^0.1.1",
+    "@air/react-drag-to-select": "^5.0.5",
+    "@emotion/css": "^11.10.5",
+    "@ingooutgo/core": "^0.1.4",
     "@types/react": "^18.0.26",
+    "kld-intersections": "^0.7.0",
     "mobx": "^6.7.0",
     "mobx-react-lite": "^3.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
+    "styled-components": "^5.3.6",
+    "tabler-icons-react": "^1.56.0",
     "typescript": "^4.9.4"
   },
   "devDependencies": {
-    "@emotion/jest": "^11.10.5",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
-    "@types/jest": "^29.2.5",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@types/react-test-renderer": "^18.0.0",
+    "@types/styled-components": "^5.1.26",
     "@types/uuid": "^9.0.0",
     "copy-webpack-plugin": "^11.0.0",
-    "jest": "^29.3.1",
-    "jest-environment-jsdom": "^29.4.3",
-    "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.2",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
+    "react": "^18.0.0",
+    "zod": "^3.21.0"
   }
 }

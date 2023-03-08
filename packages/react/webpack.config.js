@@ -8,14 +8,9 @@ module.exports = (env) => {
       filename: "index.js",
       path: path.resolve(__dirname, "build"),
       libraryTarget: "umd",
-      globalObject: "this",
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".json"],
-      fallback: {
-        stream: false,
-        buffer: false,
-      },
     },
     mode: "development",
     externals: {

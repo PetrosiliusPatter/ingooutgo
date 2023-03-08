@@ -4,24 +4,28 @@ import { v4 as uuid } from "uuid"
 import { z } from "zod"
 
 import { Connection } from "../Connection/Connection"
+import { FieldComponent } from "../FieldComponent"
 import { Input } from "../Input/Input"
-import { IOutputProps } from "../Output/Output.types"
+import { IOutputProps } from "./types"
 
-export class Output<TValue = any> extends ReplaySubject<TValue> {
+export class Output<ZS extends z.Schema> extends ReplaySubject<z.infer<ZS>> {
   /** Identifier */
   public id: string = uuid()
   /** Name */
   public name: string
   /** Type */
-  public type: z.Schema
+  public type: ZS
   /** Compute operation */
-  public observable: Observable<TValue>
+  public observable: Observable<z.infer<ZS>>
   /** Value Operator subscription */
   public subscription: Subscription
   /** Associated Connections */
-  public connections: Connection<TValue>[]
+  public connections: Connection<ZS>[]
 
-  constructor(props: IOutputProps<TValue>) {
+  /** Function to render the component */
+  public component?: FieldComponent<ZS>
+
+  constructor(props: IOutputProps<ZS>) {
     super()
 
     this.name = props.name || "Untitled"
@@ -29,6 +33,7 @@ export class Output<TValue = any> extends ReplaySubject<TValue> {
     this.observable = props.observable
     this.subscription = this.observable.subscribe(this)
     this.connections = []
+    this.component = props.component
 
     makeObservable(this, {
       id: observable,
@@ -37,6 +42,7 @@ export class Output<TValue = any> extends ReplaySubject<TValue> {
       observable: observable,
       subscription: observable,
       connections: observable,
+      component: observable,
       connected: computed,
       connect: action,
       dispose: action,
@@ -49,7 +55,7 @@ export class Output<TValue = any> extends ReplaySubject<TValue> {
   }
 
   /** Connects the output with a compatible input port */
-  public connect(input: Input<TValue>): Connection<TValue> {
+  public connect(input: Input<ZS>): Connection<z.infer<ZS>> {
     return new Connection(this, input)
   }
 

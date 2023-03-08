@@ -1,143 +1,123 @@
-import { Connection as IngoConnection } from "@ingooutgo/core"
-import { autorun } from "mobx"
 import { observer } from "mobx-react-lite"
 import * as React from "react"
 
-import { NODE_POSITION_OFFSET_X } from "../../constants"
-import { StoreContext } from "../../stores/CircuitStore/CircuitStore"
-import { fromCanvasCartesianPoint } from "../../utils/coordinates/coordinates"
-import { ConnectionProps } from "./Connection.types"
-import { quadraticCurve } from "./Connection.utils"
+import { StoreContext } from "../../stores/EditorStore"
+import { Position } from "../../types/Misc"
+import { elToPos } from "../../utils/misc"
+import { classNames } from "../../utils/styleUtils"
+import { StyledG } from "./styles"
 
-const INPUT_PORT_OFFSET_X = 12
-const INPUT_PORT_OFFSET_Y = 12
+type ConnectionProps = {
+  container: HTMLElement
+  connectionId?: string
+  a: string
+  b: string
+  pathFunc?: (start: Position, end: Position) => string
+}
 
-const OUTPUT_PORT_OFFSET_X = 0
-const OUTPUT_PORT_OFFSET_Y = 12
+const defaultPathFunc = (start: Position, end: Position) => {
+  const x1 = start.x
+  const y1 = start.y
+  const x4 = end.x
+  const y4 = end.y
+  const min_diff = 20
+  let offset: number
 
-const defaultPosition = { x: 0, y: 0 }
+  if (Math.abs(y4 - y1) < min_diff * 2) {
+    offset = Math.abs(y4 - y1) / 2
+  } else {
+    offset = min_diff
+  }
 
-export const Connection = observer(<T,>({ output, connection }: ConnectionProps<T>) => {
-  const [pathString, setPathString] = React.useState("")
-  const [fromPos, setFromPos] = React.useState(defaultPosition)
-  const [toPos, setToPos] = React.useState(defaultPosition)
-  const { store } = React.useContext(StoreContext)
+  let offsetX = offset
+  let offsetY = offset
 
-  const outputElement = connection
-    ? store.portElements.get(connection.from.id)
-    : output
-    ? store.portElements.get(output.id)
-    : undefined
-  const inputElement = connection && store.portElements.get(connection.to.id)
+  if (y4 - y1 < 0) {
+    offsetY = -offset
+  }
 
-  React.useEffect(() => {
-    if (outputElement && inputElement) {
-      return autorun(() => {
-        if (connection) {
-          const fromPosition = store.nodePositions.get(store.getNodeByPortId(connection.from.id)?.id || "")
-          const toPosition = store.nodePositions.get(store.getNodeByPortId(connection.to.id)?.id || "")
+  if (x4 - x1 < -(min_diff * 2)) {
+    offsetX = -offset
+  }
 
-          if (!fromPosition || !toPosition) {
-            return
-          }
+  const midX = (x4 - x1) / 2 + x1
 
-          const outputCartesian = fromCanvasCartesianPoint(fromPosition.x + NODE_POSITION_OFFSET_X, fromPosition.y)
+  return `
+        M${x1},${y1} 
+        L${midX - offsetX},${y1} 
+        Q${midX},${y1} ${midX},${y1 + offsetY} 
+        L${midX},${y4 - offsetY}
+        Q${midX},${y4} ${midX + offsetX},${y4}
+        L${x4},${y4}
+    `
+}
 
-          const inputCartesian = fromCanvasCartesianPoint(toPosition.x - NODE_POSITION_OFFSET_X, toPosition.y)
+export const Connection = observer(
+  ({ a, b, container, connectionId, pathFunc }: ConnectionProps) => {
+    const { store } = React.useContext(StoreContext)
 
-          const outputPortPosition = {
-            x: outputCartesian.x,
-            y: outputCartesian.y + outputElement.offsetTop,
-          }
+    const conRef = React.useRef<SVGPathElement>(null)
 
-          const inputPortPosition = {
-            x: inputCartesian.x + inputElement.offsetLeft,
-            y: inputCartesian.y + inputElement.offsetTop,
-          }
+    const aRect = store.getSocketRect(a)
+    const aPos =
+      a === "mouse" ? store.mousePosition : aRect ? elToPos(aRect, container) : null
+    const bRect = store.getSocketRect(b)
+    const bPos =
+      b === "mouse" ? store.mousePosition : bRect ? elToPos(bRect, container) : null
 
-          const newFromPos = {
-            x: outputPortPosition.x + OUTPUT_PORT_OFFSET_X,
-            y: outputPortPosition.y + OUTPUT_PORT_OFFSET_Y,
-          }
+    React.useEffect(() => {
+      if (!connectionId || !conRef.current) return
+      store.setConnectionElement(connectionId, conRef.current)
+      return () => {
+        store.setConnectionElement(connectionId, null)
+      }
+    }, [connectionId, conRef.current])
 
-          const newToPos = {
-            x: inputPortPosition.x - INPUT_PORT_OFFSET_X,
-            y: inputPortPosition.y + INPUT_PORT_OFFSET_Y,
-          }
+    const isFixSelected = !!store.selectedConnections.find((c) => c.id === connectionId)
+    const isTempSelected =
+      !!connectionId && store.tempSelection.connectionIds.includes(connectionId)
+    const isSelected = isFixSelected || isTempSelected
 
-          setFromPos(newFromPos)
-          setToPos(newToPos)
+    const pathString = React.useMemo(() => {
+      if (!aPos || !bPos) return ""
+      return (pathFunc ?? defaultPathFunc)(aPos, bPos)
+    }, [aPos, bPos, pathFunc])
 
-          setPathString(quadraticCurve(newFromPos, newToPos))
-        }
-      })
-    }
-  }, [outputElement, inputElement])
+    const handleOnClick = React.useCallback(() => {
+      const con = store.getAllConnections().find((c) => c.id === connectionId)
+      if (!con) return
 
-  React.useEffect(() => {
-    if (output && outputElement) {
-      return autorun(() => {
-        const outputPosition = store.nodePositions.get(store.getNodeByPortId(output.id)?.id || "")
+      if (!store.isExtendingSelection) {
+        store.setSelectedConnections([con])
+        return
+      }
+      if (!isFixSelected) {
+        store.setSelectedConnections([...store.selectedConnections, con])
+        return
+      }
+      const newSel = store.selectedConnections.filter((c) => c.id !== connectionId)
+      store.setIsExtendingSelection(false)
+      store.setSelectedConnections(newSel)
+      store.setIsExtendingSelection(true)
+    }, [
+      connectionId,
+      isFixSelected,
+      store.isExtendingSelection,
+      store.selectedConnections,
+    ])
 
-        if (!outputPosition) {
-          return
-        }
-
-        const outputCartesian = fromCanvasCartesianPoint(outputPosition.x + NODE_POSITION_OFFSET_X, outputPosition.y)
-
-        const outputPortPosition = {
-          x: outputCartesian.x,
-          y: outputCartesian.y + outputElement.offsetTop,
-        }
-
-        const newFromPos = {
-          x: outputPortPosition.x + OUTPUT_PORT_OFFSET_X,
-          y: outputPortPosition.y + OUTPUT_PORT_OFFSET_Y,
-        }
-
-        setFromPos(newFromPos)
-        setToPos(store.mousePosition)
-
-        setPathString(quadraticCurve(newFromPos, store.mousePosition))
-      })
-    }
-  }, [output, outputElement])
-
-  const handleClick = React.useCallback(() => {
-    if (connection) {
-      connection.dispose()
-    }
-  }, [connection])
-
-  const selectedConnection =
-    connection &&
-    store.selectedNodes?.flatMap((node) => node.connections).includes(connection as IngoConnection<unknown>)
-  const strokeColor = selectedConnection || output ? "#1e62ff" : "#424763"
-
-  return (
-    <g>
-      <path
-        className="connector"
-        d={pathString}
-        fill="none"
-        strokeWidth="2"
-        stroke={strokeColor}
-        onClick={handleClick}
-      />
-      <path
-        className="port"
-        d={`M${fromPos.x},${fromPos.y},${fromPos.x + 2},${fromPos.y}`}
-        fill="none"
-        strokeWidth="8"
-        stroke={strokeColor}
-      />
-      <path
-        className="port"
-        d={`M${toPos.x - 2},${toPos.y},${toPos.x},${toPos.y}`}
-        fill="none"
-        strokeWidth="8"
-        stroke={strokeColor}
-      />
-    </g>
-  )
-})
+    if (!aPos || !bPos) return <></>
+    return (
+      <StyledG selected={isSelected} className={classNames.connectionG}>
+        <path
+          ref={conRef}
+          className="connector"
+          d={pathString}
+          fill="none"
+          strokeWidth="4"
+          onClick={handleOnClick}
+        />
+      </StyledG>
+    )
+  }
+)

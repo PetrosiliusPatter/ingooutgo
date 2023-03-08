@@ -1,21 +1,22 @@
 import { action, makeObservable, observable } from "mobx"
 import { Subject, Subscription } from "rxjs"
 import { v4 as uuid } from "uuid"
+import { z } from "zod"
 
 import { Input } from "../Input/Input"
 import { Output } from "../Output/Output"
 
-export class Connection<T> extends Subject<T> {
+export class Connection<ZS extends z.Schema> extends Subject<z.infer<ZS>> {
   /** Identifier */
   public id: string = uuid()
   /** Output */
-  public from: Output<T>
+  public from: Output<ZS>
   /** Input */
-  public to: Input<T>
+  public to: Input<ZS>
   /** Subscription */
   public subscription: Subscription
 
-  constructor(from: Output<T>, to: Input<T>) {
+  constructor(from: Output<ZS>, to: Input<ZS>) {
     super()
 
     if (from.type !== to.type) {
@@ -49,7 +50,9 @@ export class Connection<T> extends Subject<T> {
     this.unsubscribe()
     this.subscription.unsubscribe()
 
-    this.from.connections = this.from.connections.filter((connection) => connection !== this)
+    this.from.connections = this.from.connections.filter(
+      (connection) => connection !== this
+    )
     this.to.connection = null
 
     this.to.next(this.to.defaultValue)

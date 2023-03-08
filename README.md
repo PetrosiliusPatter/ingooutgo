@@ -13,7 +13,9 @@ Improvements on the original Nodl:
   - Nodes can be defined with accent color and a neat icon
   - Fields for nodes can be defined with custom UI components
   - Selecting nodes feels a bit nicer (opinionated)
-- Node actions (coming soon)
+  - A nice node browser, used to add previously registered nodes
+- Node actions (coming soon™)
+- Better compatibility checking between sockets (coming soon™)
 - Wrapping nodes into one bigger node (coming soon™)
 - Moooore to come
 
