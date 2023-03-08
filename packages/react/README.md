@@ -6,7 +6,7 @@ This library is powered by MobX under the hood; and may be observed by an extern
 
 <!-- [View Demo](https://codesandbox.io/s/agitated-elgamal-txqqql?file=/src/App.js) -->
 
-<!-- ![Visual representation of nodl](../../assets/nodl.png?raw=true) -->
+![Visual representation of IngoOutgo](../../assets/ingooutgo.png?raw=true)
 
 ### Getting Started
 

@@ -7,6 +7,8 @@ import { createTextField } from "../../components/TextField"
 import { numberSchema, stringSchema } from "../../schemas"
 
 class RepeatNodeClass extends Node {
+  name: string = "Repeat"
+
   inputs = {
     a: new Input({
       name: "Repeat",

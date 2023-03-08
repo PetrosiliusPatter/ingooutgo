@@ -6,6 +6,8 @@ import { createNumberField } from "../../components/NumberField"
 import { numberSchema } from "../../schemas"
 
 class AddNodeClass extends Node {
+  name: string = "Add"
+
   inputs = {
     a: new Input({
       name: "A",

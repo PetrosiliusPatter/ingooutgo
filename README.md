@@ -4,6 +4,8 @@
 
 A framework for node-based applications. Fork of Emil Widlund's amazing [Nodl](https://github.com/emilwidlund/nodl).
 
+![Visual representation of nodl](assets/ingooutgo.png?raw=true)
+
 Improvements on the original Nodl:
 
 - UI improvements

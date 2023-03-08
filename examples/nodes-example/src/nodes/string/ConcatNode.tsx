@@ -6,6 +6,8 @@ import { createTextField } from "../../components/TextField"
 import { stringSchema } from "../../schemas"
 
 class ConcatNodeClass extends Node {
+  name: string = "Concat"
+
   inputs = {
     a: new Input({
       name: "A",
