@@ -23,8 +23,9 @@
   },
   "homepage": "https://github.com/petrosiliuspatter/ingooutgo#readme",
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@ingooutgo/core": "^0.1.2",
+    "@emotion/css": "^11.7.1",
+    "@ingooutgo/core": "^0.1.0",
+    "@ingooutgo/nodes-example": "^0.1.0",
     "@ingooutgo/react": "^0.1.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
-    "copy-webpack-plugin": "^10.2.4"
+    "copy-webpack-plugin": "^10.2.4",
+    "webpack-dev-server": "^4.11.1"
   }
 }

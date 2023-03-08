@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "private": true,
   "scripts": {
-    "test": "yarn workspaces run test",
+    "test": "yarn workspace @ingooutgo/core run test",
     "build": "yarn workspaces run build",
     "prepare": "husky install"
   },
@@ -34,6 +34,8 @@
   },
   "workspaces": [
     "packages/core",
-    "packages/react"
+    "packages/react",
+    "examples/react-example",
+    "examples/nodes-example"
   ]
 }

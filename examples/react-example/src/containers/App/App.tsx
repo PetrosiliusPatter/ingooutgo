@@ -1,71 +1,63 @@
-import { Global } from "@emotion/react"
-import { Node, Input, Output } from "@ingooutgo/core"
-import { Circuit, CircuitStore } from "@ingooutgo/react"
+import { mathCatalog, stringCatalog } from "@ingooutgo/nodes-example"
+import {
+  Catalog,
+  EditorStore,
+  loadSerializedStore,
+  NodeEditor,
+  SerializedStore,
+  serializeStore,
+} from "@ingooutgo/react"
 import * as React from "react"
-import { combineLatest, map } from "rxjs"
-import { z } from "zod"
 
-/** Declare a zod schema for value validation */
-const NumberSchema = z.number()
+import "./App.styles"
+import { useLocalStorage } from "./useLocalStorage"
 
-class Addition extends Node {
-  inputs = {
-    a: new Input({ name: "A", type: NumberSchema, defaultValue: 0 }),
-    b: new Input({ name: "B", type: NumberSchema, defaultValue: 0 }),
-  }
-
-  outputs = {
-    output: new Output({
-      name: "Output",
-      type: NumberSchema,
-      observable: combineLatest([this.inputs.a, this.inputs.b]).pipe(
-        map((inputs) => inputs.reduce((sum, value) => sum + value), 0)
-      ),
-    }),
-  }
+const nodeCatalog: Catalog = {
+  nodes: [],
+  subcategories: {
+    math: mathCatalog,
+    string: stringCatalog,
+  },
 }
 
-/** Declare 3 addition nodes */
-const additionNode1 = new Addition()
-const additionNode2 = new Addition()
-const additionNode3 = new Addition()
-
-/** Connect them together */
-additionNode1.outputs.output.connect(additionNode3.inputs.a)
-additionNode2.outputs.output.connect(additionNode3.inputs.b)
-
 export const App = () => {
-  const store = new CircuitStore()
+  const [store, setStore] = React.useState(new EditorStore(nodeCatalog))
+
+  const [loadedSerialized, setLoadedSerialized] = React.useState(false)
+  const [serializedStore, setSerializedStore] = useLocalStorage<
+    SerializedStore | undefined
+  >("serializedStore", undefined)
 
   React.useEffect(() => {
-    store.setNodes([
-      [additionNode1, { x: -220, y: 100 }],
-      [additionNode2, { x: -220, y: -100 }],
-      [additionNode3, { x: 220, y: 0 }],
-    ])
-
-    return () => {
-      store.dispose()
+    if (loadedSerialized) {
+      return
     }
-  }, [])
+    setLoadedSerialized(true)
+    if (!serializedStore) {
+      return
+    }
+    setStore(loadSerializedStore(nodeCatalog, serializedStore))
+  }, [serializedStore])
+
+  const recalcSerialization = React.useCallback(() => {
+    setSerializedStore(serializeStore(store))
+  }, [store])
+  const loadFromSerialization = React.useCallback(() => {
+    if (!serializedStore) {
+      return
+    }
+    setStore(loadSerializedStore(nodeCatalog, serializedStore))
+  }, [serializedStore])
 
   return (
     <>
-      <Global
-        styles={{
-          body: {
-            margin: 0,
-            backgroundColor: "#1c1e2a",
-          },
-        }}
-      />
-      <Circuit
-        store={store}
-        onConnection={(c) => console.log("NEW CONNECTION", c)}
-        onConnectionRemoval={(c) => console.log("REMOVED CONNECTION", c)}
-        onNodeRemoval={(n) => console.log("REMOVED NODE", n)}
-        onSelectionChanged={(s) => console.log("SELECTION CHANGED", s)}
-      />
+      <div className="debug-panel">
+        <button onClick={recalcSerialization}>Save Editor</button>
+        <button onClick={loadFromSerialization}>Load Saved Editor</button>
+      </div>
+      <div className={`playground-wrapper rpg-theme`}>
+        <NodeEditor store={store} />
+      </div>
     </>
   )
 }

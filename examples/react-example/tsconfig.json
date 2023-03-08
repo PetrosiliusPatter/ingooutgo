@@ -5,6 +5,7 @@
     "outDir": "build",
     "strict": true,
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "jsx": "react",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

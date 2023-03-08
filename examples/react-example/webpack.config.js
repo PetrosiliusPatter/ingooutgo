@@ -3,7 +3,7 @@
 const CopyPlugin = require("copy-webpack-plugin")
 const path = require("path")
 
-module.exports = (env) => {
+module.exports = () => {
   return {
     entry: "./src/index.tsx",
     output: {

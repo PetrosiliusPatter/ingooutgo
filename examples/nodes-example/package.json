@@ -1,7 +1,7 @@
 {
-  "name": "@ingooutgo/react",
-  "version": "0.1.14",
-  "description": "React implementation of the IngoOutgo framework",
+  "name": "@ingooutgo/nodes-example",
+  "version": "0.1.0",
+  "description": "An example implementation for a Node library",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "author": "Anton von Raumer",
@@ -13,7 +13,8 @@
   "scripts": {
     "build": "webpack --mode=development --devtool=inline-source-map",
     "build:prod": "webpack --mode=production --devtool=source-map",
-    "prepare": "yarn run build:prod"
+    "prepare": "yarn run build:prod",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -25,25 +26,20 @@
   },
   "homepage": "https://github.com/petrosiliuspatter/ingooutgo#readme",
   "dependencies": {
-    "@air/react-drag-to-select": "^5.0.5",
-    "@emotion/css": "^11.10.5",
-    "@ingooutgo/core": "^0.1.4",
-    "@types/react": "^18.0.26",
-    "kld-intersections": "^0.7.0",
-    "mobx": "^6.7.0",
-    "mobx-react-lite": "^3.4.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-draggable": "^4.4.5",
-    "styled-components": "^5.3.6",
-    "tabler-icons-react": "^1.56.0",
-    "typescript": "^4.9.4"
+    "@emotion/react": "^11.10.6",
+    "@ingooutgo/core": "^0.1.0",
+    "@ingooutgo/react": "^0.1.0",
+    "@mantine/core": "^5.10.4",
+    "@mantine/hooks": "^5.10.4",
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
+    "@types/jest": "^29.2.5",
     "@types/styled-components": "^5.1.26",
     "@types/uuid": "^9.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
   },
