@@ -9,6 +9,8 @@ import {
 } from "@ingooutgo/react"
 import * as React from "react"
 
+import { InfoBox } from "../../components/Infobox/Infobox"
+
 import "./App.styles"
 import { useLocalStorage } from "./useLocalStorage"
 
@@ -49,6 +51,11 @@ export const App = () => {
     setStore(loadSerializedStore(nodeCatalog, serializedStore))
   }, [serializedStore])
 
+  const [infoDismissedBefore, setInfoDismissedBefore] = useLocalStorage<boolean>(
+    "infoboxDismissed",
+    false
+  )
+
   return (
     <>
       <div className="debug-panel">
@@ -57,6 +64,12 @@ export const App = () => {
       </div>
       <div className={`playground-wrapper rpg-theme`}>
         <NodeEditor store={store} />
+      </div>
+      <div>
+        <InfoBox
+          startHidden={infoDismissedBefore}
+          onDismiss={() => setInfoDismissedBefore(true)}
+        ></InfoBox>
       </div>
     </>
   )

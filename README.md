@@ -4,14 +4,15 @@
 
 A framework for node-based applications. Fork of Emil Widlund's amazing [Nodl](https://github.com/emilwidlund/nodl).
 
+[View Demo](https://petrosiliuspatter.github.io/ingooutgo/)
 ![Visual representation of nodl](assets/ingooutgo.png?raw=true)
 
 Improvements on the original Nodl:
 
 - UI improvements
-  - UI is themable, using classnames and css variables
+  - UI is themable, using classnames and css variables (to-do: how-to)
   - Connections between nodes can be customized
-  - Connections snap to compatible sockets when connecting them
+  - While creating a new connection, the connection snaps to compatible sockets
   - Nodes can be defined with accent color and a neat icon
   - Fields for nodes can be defined with custom UI components
   - Selecting nodes feels a bit nicer (opinionated)
@@ -48,10 +49,10 @@ The UI turned out pretty good! And I had even more plans for the project. Sadly,
 
 ### Why the fork
 
-The logic beind the nodes works much better than my implementation did, I especially like the use of RxJS. So I decided to leverage it
-Since the project structure was so similar, it actually only took me a week to make my UI work with the nodl core.
+The logic behind the nodes works much better than my implementation did, I especially like the use of RxJS. So I decided to leverage it
+Since the project structure was so similar, it actually only took me a week to make my UI work with the Nodl core.
 
-However, I did have to change one or two things in the core as well.. Minor things, but none that made sense to make a PR for, since they really were done with my UI in mind.
+However, I did have to change one or two things in the core as well... Minor things, but none that made sense to make a PR for, since they really were done with my UI in mind.
 I got even more ideas that I want to implement into my node editor, and don't wish to have to compromise with Emil's vision for his.
 _Plus, I prefer my code formatting lol_
 Thus the fork!

@@ -9,9 +9,11 @@
     "build/*"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "dev": "webpack serve",
-    "test": "jest"
+    "test": "jest",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -24,12 +26,17 @@
   "homepage": "https://github.com/petrosiliuspatter/ingooutgo#readme",
   "dependencies": {
     "@emotion/css": "^11.7.1",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@ingooutgo/core": "^0.1.0",
     "@ingooutgo/nodes-example": "^0.1.0",
     "@ingooutgo/react": "^0.1.0",
+    "@mantine/core": "^6.0.1",
+    "@mantine/hooks": "^6.0.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "emotion": "^11.0.0",
+    "gh-pages": "^5.0.0",
     "prettier": "^2.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

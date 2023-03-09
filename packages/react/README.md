@@ -4,7 +4,7 @@ A React based UI for IngoOutgo.
 
 This library is powered by MobX under the hood; and may be observed by an external MobX-instance for UI reactivity.
 
-<!-- [View Demo](https://codesandbox.io/s/agitated-elgamal-txqqql?file=/src/App.js) -->
+[View Demo](https://petrosiliuspatter.github.io/ingooutgo/)
 
 ![Visual representation of IngoOutgo](../../assets/ingooutgo.png?raw=true)
 
