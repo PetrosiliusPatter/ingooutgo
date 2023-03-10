@@ -38,7 +38,7 @@ jobs:
       - name: Build 🏗
         run: yarn && yarn run build
       - name: Debug 🐛
-        run: ls -la
+        run: ls -la && ls -la ./examples/react-examples/ && ls -la ./examples/react-examples/build
       - name: Upload artifact 📦
         uses: actions/upload-pages-artifact@v1
         with:
