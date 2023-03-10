@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install and Build 🔧
-        run: |
+        run: yarn |
           yarn run build
 
       - name: Deploy 🚀
