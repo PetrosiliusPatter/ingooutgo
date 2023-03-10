@@ -9,7 +9,7 @@
     "build/*"
   ],
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --mode=production --devtool=source-map",
     "dev": "webpack serve",
     "test": "jest"
   },

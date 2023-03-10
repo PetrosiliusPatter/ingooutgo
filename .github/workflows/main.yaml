@@ -36,7 +36,7 @@ jobs:
       - name: Setup Pages 📄
         uses: actions/configure-pages@v3
       - name: Build 🏗
-        run: yarn && yarn run build && yarn workspace @ingooutgo/react-example run deploy
+        run: yarn && yarn run build
       - name: Upload artifact 📦
         uses: actions/upload-pages-artifact@v1
         with:
