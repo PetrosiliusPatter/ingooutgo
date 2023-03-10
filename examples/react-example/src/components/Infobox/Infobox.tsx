@@ -17,7 +17,7 @@ const InfoTest = [
     <span>
       <b>IngoOutgo!</b>
     </span>,
-    <span>A WIP node editor by PetrosiliusPatter</span>,
+    <span>A WIP node editor by PetrosiliusPatter🧙‍♂️</span>,
   ],
   [
     <span>
