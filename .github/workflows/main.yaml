@@ -2,7 +2,7 @@ name: IngoOutgo CI
 
 on:
   push:
-    branches: [f/deploy-action]
+    branches: [main]
   pull_request:
     branches: [main]
 
