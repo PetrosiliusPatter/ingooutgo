@@ -38,12 +38,12 @@ jobs:
       - name: Build 🏗
         run: yarn && yarn run build
       - name: Debug 🐛
-        run: ls -la && ls -la ./examples/react-examples/ && ls -la ./examples/react-examples/build
+        run: ls -la && ls -la ./examples/react-example/ && ls -la ./examples/react-example/build
       - name: Upload artifact 📦
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: "./examples/react-examples/build"
+          path: "./examples/react-example/build"
       - name: Deploy to GitHub Pages 🚀
         id: deployment
         uses: actions/deploy-pages@v1
