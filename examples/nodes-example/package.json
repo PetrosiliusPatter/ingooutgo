@@ -13,8 +13,7 @@
   "scripts": {
     "build": "webpack --mode=development --devtool=inline-source-map",
     "build:prod": "webpack --mode=production --devtool=source-map",
-    "prepare": "yarn run build:prod",
-    "test": "jest"
+    "prepare": "yarn run build:prod"
   },
   "repository": {
     "type": "git",
@@ -34,7 +33,6 @@
     "styled-components": "^5.3.6"
   },
   "devDependencies": {
-    "@types/jest": "^29.2.5",
     "@types/styled-components": "^5.1.26",
     "@types/uuid": "^9.0.0",
     "copy-webpack-plugin": "^11.0.0",
