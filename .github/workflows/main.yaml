@@ -2,7 +2,7 @@ name: IngoOutgo CI
 
 on:
   push:
-    branches: [main]
+    branches: [f/unfork]
   pull_request:
     branches: [main]
 
