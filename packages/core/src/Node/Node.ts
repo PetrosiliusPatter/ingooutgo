@@ -1,5 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx"
 import { v4 as uuid } from "uuid"
+import { z } from "zod"
 
 import { Connection } from "../Connection/Connection"
 import { Input } from "../Input/Input"
@@ -17,17 +18,22 @@ export abstract class Node<TData extends NodeData = NodeData> {
   public abstract outputs: Record<string, Output<any>>
   /** Arbitrary Data Store */
   public data: TData = {} as TData
+  /** Name of the Node Registration (for serialization) */
+  public registrationId: string = ""
 
   /** Icon to show (TablerIcons) */
-  public icon?: string = undefined
+  public icon?: string
   /** Accent color to use */
-  public accentColor?: string = undefined
+  public accentColor?: string
 
   constructor() {
     makeObservable(this, {
       id: observable,
       name: observable,
       data: observable,
+      icon: observable,
+      accentColor: observable,
+      registrationId: observable,
       connections: computed,
       dispose: action,
     })
@@ -37,7 +43,7 @@ export abstract class Node<TData extends NodeData = NodeData> {
   public get connections() {
     return [...Object.values(this.inputs), ...Object.values(this.outputs)]
       .flatMap((port) => ("connection" in port ? [port.connection] : port.connections))
-      .filter((connection): connection is Connection<any> => Boolean(connection))
+      .filter((connection): connection is Connection<z.Schema> => Boolean(connection))
   }
 
   /** Disposes the Node */
