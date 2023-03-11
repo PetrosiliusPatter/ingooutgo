@@ -1,19 +1,19 @@
-import { Connection, Input, Node, Output } from "@ingooutgo/core"
+import { Connection, Input, Output } from "@nodl/core"
 import { makeAutoObservable } from "mobx"
 import { createContext } from "react"
 import { z } from "zod"
 
+import { Catalog, IngoNode, NodeRegistration } from "../types/IngoNode"
 import { ConnectionIds, Position } from "../types/Misc"
-import { Catalog, NodeRegistration } from "../types/NodeCatalog"
 import { connectionsForNode } from "../utils/misc"
 
 export class EditorStore {
   /** Associated Nodes */
-  public nodes: Node[] = []
+  public nodes: IngoNode[] = []
   /** Associated Node Elements */
-  public nodeElements: Map<Node["id"], HTMLElement> = new Map()
+  public nodeElements: Map<IngoNode["id"], HTMLElement> = new Map()
   /** Node Positions */
-  public nodePositions: Map<Node["id"], { x: number; y: number }> = new Map()
+  public nodePositions: Map<IngoNode["id"], { x: number; y: number }> = new Map()
   /** Socket Elements */
   public socketElements: Map<Input<any>["id"] | Output<any>["id"], HTMLElement> =
     new Map()
@@ -22,11 +22,11 @@ export class EditorStore {
   /** Connection Elements */
   public connectionElements: Map<Connection<any>["id"], SVGPathElement> = new Map()
   /** Selected Nodes */
-  public selectedNodes: Node[] = []
+  public selectedNodes: IngoNode[] = []
   /** Selected Connections */
   public selectedConnections: Connection<any>[] = []
   /** Root Catalog */
-  public rootCatalog: Catalog
+  public nodeCatalog: Catalog
   /** Mouse Position */
   public mousePosition: Position = { x: 0, y: 0 }
   /** Browser Visibility */
@@ -44,7 +44,7 @@ export class EditorStore {
   public connectionEndIds: ConnectionIds | undefined = undefined
 
   constructor(catalog?: Catalog) {
-    this.rootCatalog = catalog ?? {
+    this.nodeCatalog = catalog ?? {
       nodes: [],
       subcategories: {},
     }
@@ -56,30 +56,15 @@ export class EditorStore {
     return Array.from(new Set(this.nodes.flatMap(connectionsForNode)))
   }
 
-  /** Add a new NodeRegistration at the given category path. If the subcategory doesn't exist, it will be created. */
-  public registerNode(nodeReg: NodeRegistration, categoryPath: string[]): void {
-    let currentCatalog = this.rootCatalog
-    for (const subcategory of categoryPath) {
-      if (!currentCatalog.subcategories[subcategory]) {
-        currentCatalog.subcategories[subcategory] = {
-          nodes: [],
-          subcategories: {},
-        }
-      }
-      currentCatalog = currentCatalog.subcategories[subcategory]
-    }
-    currentCatalog.nodes.push(nodeReg)
-  }
-
   /** Gets a Node by ID */
-  public getNodeById(id: Node["id"]): Node | undefined {
+  public getNodeById(id: IngoNode["id"]): IngoNode | undefined {
     return this.nodes.find((n) => n.id == id)
   }
 
   /** Find a Node that has the given SocketID */
-  public getNodeBySocketId(
+  private getNodeBySocketId(
     socketId: Input<any>["id"] | Output<any>["id"]
-  ): Node | undefined {
+  ): IngoNode | undefined {
     return this.nodes.find(
       (n) =>
         Object.values(n.inputs).find((i) => i.id === socketId) ||
@@ -88,13 +73,13 @@ export class EditorStore {
   }
 
   /** Add Node at position */
-  public addNode(node: Node, position: { x: number; y: number }): void {
+  public addNode(node: IngoNode, position: { x: number; y: number }): void {
     this.nodes.push(node)
     this.nodePositions.set(node.id, position)
   }
 
   /** Remove a Node and all it's Connections */
-  public removeNode(nodeId: Node["id"]): void {
+  public removeNode(nodeId: IngoNode["id"]): void {
     const node = this.getNodeById(nodeId)
     if (!node) return
 
@@ -113,7 +98,10 @@ export class EditorStore {
   }
 
   /** Set position of Node */
-  public setNodePosition(nodeId: Node["id"], position: { x: number; y: number }): void {
+  public setNodePosition(
+    nodeId: IngoNode["id"],
+    position: { x: number; y: number }
+  ): void {
     this.nodePositions.set(nodeId, position)
 
     const node = this.getNodeById(nodeId)
@@ -121,7 +109,11 @@ export class EditorStore {
     const socketIds = [...Object.values(node.inputs), ...Object.values(node.outputs)].map(
       (s) => s.id
     )
-    this.updateSocketRects(socketIds)
+    for (const socketId of socketIds) {
+      const element = this.socketElements.get(socketId)
+      if (!element) continue
+      this.socketRects.set(socketId, element.getBoundingClientRect())
+    }
   }
 
   /** Associates a given Socket with an HTML Element */
@@ -137,15 +129,6 @@ export class EditorStore {
     this.socketRects.set(socketId, element.getBoundingClientRect())
   }
 
-  /** Update Socket Rects */
-  public updateSocketRects(socketIds: string[]): void {
-    for (const socketId of socketIds) {
-      const element = this.socketElements.get(socketId)
-      if (!element) continue
-      this.socketRects.set(socketId, element.getBoundingClientRect())
-    }
-  }
-
   /** Offset position of the selected Nodes */
   public offsetSelectedNodesPosition(offset: { x: number; y: number }): void {
     this.selectedNodes.forEach((node) => {
@@ -158,22 +141,23 @@ export class EditorStore {
   }
 
   /** Associates a given Node instance with an HTML Element */
-  public setNodeElement(nodeId: Node["id"], socketElement: HTMLElement): void {
+  public setNodeElement(nodeId: IngoNode["id"], socketElement: HTMLElement): void {
     this.nodeElements.set(nodeId, socketElement)
   }
 
   /** Clears a given Node's associated HTML Element from store */
-  public removeNodeElement(nodeId: Node["id"]): void {
+  public removeNodeElement(nodeId: IngoNode["id"]): void {
     this.nodeElements.delete(nodeId)
   }
 
   /** Selects the given nodes */
-  public setSelectedNodes(nodes: Node[]): void {
+  public setSelectedNodes(nodes: IngoNode[]): void {
+    let newSelectedNodes = this.selectedNodes
     if (!this.isExtendingSelection) {
-      this.selectedNodes = []
+      newSelectedNodes = []
     }
-    const newNodes = nodes.filter((n) => !this.selectedNodes.includes(n))
-    this.selectedNodes = [...this.selectedNodes, ...newNodes]
+    const newNodes = nodes.filter((n) => !newSelectedNodes.includes(n))
+    this.selectedNodes = [...newSelectedNodes, ...newNodes]
   }
 
   /** Remove a Connections */
@@ -242,7 +226,7 @@ export class EditorStore {
     const newSelectedNodes = this.tempSelection.nodeIds
       .filter((nid) => !this.selectedNodes.find((n) => n.id === nid))
       .map((id) => this.getNodeById(id))
-      .filter((n) => n) as Node[]
+      .filter((n) => n) as IngoNode[]
     const allSelectedNodes = this.isExtendingSelection
       ? [...this.selectedNodes, ...newSelectedNodes]
       : newSelectedNodes
@@ -413,6 +397,37 @@ export class EditorStore {
   /** Get the DOMrect of a socket by ID relative to a wrapper component*/
   public getSocketRect(socketId: string): DOMRect | undefined {
     return this.socketRects.get(socketId)
+  }
+
+  /** Get all node registrations in the catalog */
+  public getAllNodeRegistrations(
+    catalog: Catalog = this.nodeCatalog
+  ): NodeRegistration[] {
+    return Array.from(
+      new Set([
+        ...Object.values(catalog.subcategories).flatMap((c) =>
+          this.getAllNodeRegistrations(c)
+        ),
+        ...catalog.nodes,
+      ])
+    )
+  }
+
+  /** Get the node registration by a registration ID */
+  public getRegistrationById(
+    registrationId: string,
+    catalog: Catalog = this.nodeCatalog
+  ): NodeRegistration | undefined {
+    let found = catalog.nodes.find((n) => n.registrationId === registrationId)
+    if (!found) {
+      for (const category of Object.values(catalog.subcategories)) {
+        found = this.getRegistrationById(registrationId, category)
+        if (found) {
+          break
+        }
+      }
+    }
+    return found
   }
 }
 

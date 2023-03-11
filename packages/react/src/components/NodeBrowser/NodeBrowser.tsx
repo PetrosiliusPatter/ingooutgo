@@ -3,7 +3,7 @@ import * as React from "react"
 import { ArrowBackUp, ArrowNarrowRight } from "tabler-icons-react"
 
 import { StoreContext } from "../../stores/EditorStore"
-import { NodeRegistration, Catalog, nodesInSubCategories } from "../../types/NodeCatalog"
+import { NodeRegistration, Catalog } from "../../types/IngoNode"
 import { useOnClickOutside, useKeyPress } from "../../utils/customHooks"
 import { stopEvent } from "../../utils/misc"
 import { classNames } from "../../utils/styleUtils"
@@ -45,7 +45,7 @@ export const NodeBrowser = observer(() => {
       setPos(store.mousePosition)
       setIsPosLatest(true)
     }
-  }, [store.isBrowserVisible, isPosLatest, store.mousePosition, store.rootCatalog])
+  }, [store.isBrowserVisible, isPosLatest, store.mousePosition, store.nodeCatalog])
 
   // After opened
   React.useEffect(() => {
@@ -61,26 +61,24 @@ export const NodeBrowser = observer(() => {
   const selectNode = React.useCallback(
     (n: NodeRegistration) => (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation()
-      const newNode = n.create()
-      newNode.registrationId = n.id
-      store.addNode(newNode, pos)
+      store.addNode(n.createNode(), pos)
       hideBrowser()
     },
     [hideBrowser, pos, store]
   )
 
   const currSubCatalog = React.useMemo(() => {
-    let curr: Catalog = store.rootCatalog
+    let curr: Catalog = store.nodeCatalog
     for (let i = history.length - 1; i >= 0; i--) {
       curr = curr.subcategories[history[i]]
     }
     return curr
-  }, [history, store.rootCatalog])
+  }, [history, store.nodeCatalog])
 
   const renderedEntries = React.useMemo(() => {
-    const availableNodes = nodesInSubCategories(store.rootCatalog)
     if (searchValue) {
-      return availableNodes
+      return store
+        .getAllNodeRegistrations()
         .filter((n) => n.name.toLowerCase().includes(searchValue.toLowerCase()))
         .sort((a, b) => {
           const metricA = a.name.startsWith(searchValue) ? 2 : 0
@@ -146,7 +144,7 @@ export const NodeBrowser = observer(() => {
       ))
     )
     return out
-  }, [currSubCatalog, searchValue, history, selectNode, store.rootCatalog])
+  }, [currSubCatalog, searchValue, history, selectNode, store.nodeCatalog])
 
   const out = React.useMemo(() => {
     if (!store.isBrowserVisible || !isPosLatest) {

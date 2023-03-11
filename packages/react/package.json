@@ -1,7 +1,7 @@
 {
   "name": "@ingooutgo/react",
-  "version": "0.1.14",
-  "description": "React implementation of the IngoOutgo framework",
+  "version": "0.2.0",
+  "description": "Custom UI for @nodl/core",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "author": "Anton von Raumer",
@@ -27,8 +27,9 @@
   "dependencies": {
     "@air/react-drag-to-select": "^5.0.5",
     "@emotion/css": "^11.10.5",
-    "@ingooutgo/core": "^0.1.4",
+    "@nodl/core": "^0.1.6",
     "@types/react": "^18.0.26",
+    "camelcase": "^7.0.1",
     "kld-intersections": "^0.7.0",
     "mobx": "^6.7.0",
     "mobx-react-lite": "^3.4.0",
@@ -44,11 +45,12 @@
     "@types/uuid": "^9.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "ts-loader": "^9.4.2",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "webpack": "^5.76.1",
+    "webpack-cli": "^5.0.1",
+    "zod": "^3.20.2"
   },
   "peerDependencies": {
     "react": "^18.0.0",
-    "zod": "^3.21.0"
+    "zod": "^3.20.2"
   }
 }

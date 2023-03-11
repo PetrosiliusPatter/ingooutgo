@@ -2,8 +2,8 @@ import camelcase from "camelcase"
 import { observer } from "mobx-react-lite"
 import * as React from "react"
 import Draggable, { DraggableEventHandler } from "react-draggable"
-import { IconProps } from "tabler-icons-react"
 import * as Icons from "tabler-icons-react"
+import { IconProps } from "tabler-icons-react"
 
 import { StoreContext } from "../../stores/EditorStore"
 import { classNames } from "../../utils/styleUtils"
@@ -32,6 +32,11 @@ export const NodeCard: React.FC<NodeCardProps> = observer(({ nodeId }: NodeCardP
   const tempSelected = store.tempSelection.nodeIds.find((n) => n === nodeId)
   const selected = (fixSelected || tempSelected) != undefined
 
+  const nodeRegistration = React.useMemo(() => {
+    if (!nodeData?.data.registrationId) return null
+    return store.getRegistrationById(nodeData.data.registrationId)
+  }, [nodeData?.data.registrationId, store])
+
   const onDragStartHander = React.useCallback<DraggableEventHandler>(
     (e) => {
       if (!nodeData) return
@@ -48,9 +53,8 @@ export const NodeCard: React.FC<NodeCardProps> = observer(({ nodeId }: NodeCardP
       e.preventDefault()
 
       if (selected) {
-        const newSelection = store.selectedNodes.filter((n) => n.id !== nodeId)
         store.setIsExtendingSelection(false)
-        store.setSelectedNodes(newSelection)
+        store.setSelectedNodes([nodeData])
         store.setIsExtendingSelection(true)
       }
 
@@ -70,9 +74,9 @@ export const NodeCard: React.FC<NodeCardProps> = observer(({ nodeId }: NodeCardP
   )
 
   const renderedIcon = React.useMemo(() => {
-    if (!nodeData?.icon) return <></>
+    if (!nodeRegistration?.icon) return <></>
 
-    const iconName = camelcase(nodeData.icon, { pascalCase: true })
+    const iconName = camelcase(nodeRegistration.icon, { pascalCase: true })
     if (!Icons[iconName as keyof typeof Icons]) return <></>
 
     const TablerIcon: React.FC<IconProps> = Icons[iconName as keyof typeof Icons]
@@ -81,7 +85,7 @@ export const NodeCard: React.FC<NodeCardProps> = observer(({ nodeId }: NodeCardP
         <TablerIcon size={"1rem"} />
       </NodeIconWrapper>
     )
-  }, [selected, nodeData?.icon])
+  }, [selected, nodeRegistration?.icon])
 
   const renderedFields = React.useMemo(() => {
     if (!nodeData) return <></>
@@ -106,14 +110,14 @@ export const NodeCard: React.FC<NodeCardProps> = observer(({ nodeId }: NodeCardP
       <NodeWrapper className={classNames.nodeCard} selected={selected} ref={nodeRef}>
         <NodeTitleBar
           className={classNames.nodeTitleBar}
-          titleBarColor={nodeData.accentColor}
+          titleBarColor={nodeRegistration?.accentColor}
         >
           {renderedIcon}
           <NodeLabel className={classNames.nodeTitleLabel}>{nodeData.name}</NodeLabel>
         </NodeTitleBar>
         <Divider
           className={classNames.nodeDivider}
-          titleBarColor={nodeData.accentColor}
+          titleBarColor={nodeRegistration?.accentColor}
         />
         {renderedFields}
       </NodeWrapper>

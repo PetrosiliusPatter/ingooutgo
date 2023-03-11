@@ -1,11 +1,11 @@
 import { Catalog } from "@ingooutgo/react"
 
-import { concatNode } from "./ConcatNode"
-import { repeatNode } from "./RepeatNode"
+import { concatNodeRegistraion } from "./ConcatNode"
+import { repeatNodeRegistraion } from "./RepeatNode"
 
 export const stringCatalog: Catalog = {
   label: "String",
-  nodes: [concatNode, repeatNode],
+  nodes: [concatNodeRegistraion, repeatNodeRegistraion],
   subcategories: {},
 }
 

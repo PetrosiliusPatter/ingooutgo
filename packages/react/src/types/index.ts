@@ -1,2 +1,2 @@
 export * from "./Misc"
-export * from "./NodeCatalog"
+export * from "./IngoNode"

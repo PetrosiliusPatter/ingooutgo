@@ -1,6 +1,7 @@
 {
   "name": "@ingooutgo/react-example",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "An example usage of IngoOutgo",
   "main": "build/index.js",
   "author": "Anton von Raumer",
   "license": "MIT",
@@ -26,9 +27,8 @@
     "@emotion/css": "^11.7.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
-    "@ingooutgo/core": "^0.1.0",
-    "@ingooutgo/nodes-example": "^0.1.0",
-    "@ingooutgo/react": "^0.1.0",
+    "@ingooutgo/react": "^0.2.0",
+    "@ingooutgo/nodes-example": "^0.2.0",
     "@mantine/core": "^6.0.1",
     "@mantine/hooks": "^6.0.1",
     "@types/react": "^18.0.0",
@@ -43,7 +43,7 @@
   "devDependencies": {
     "@types/node": "^18.7.18",
     "copy-webpack-plugin": "^10.2.4",
-    "webpack": "^5.76.0",
+    "webpack": "^5.76.1",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   }

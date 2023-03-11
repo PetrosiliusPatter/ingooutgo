@@ -1,45 +1,44 @@
-import { Node, Input, Output } from "@ingooutgo/core"
 import { NodeRegistration } from "@ingooutgo/react"
+import { Input, Output, Node } from "@nodl/core"
 import { combineLatest, map } from "rxjs"
 
 import { createNumberField } from "../../components/NumberField"
 import { numberSchema } from "../../schemas"
 
-class AddNodeClass extends Node {
-  name: string = "Add"
-
+class AddNode extends Node {
   inputs = {
     a: new Input({
       name: "A",
       type: numberSchema,
       defaultValue: 1,
-      component: createNumberField({ schema: numberSchema }),
     }),
     b: new Input({
       name: "B",
       type: numberSchema,
       defaultValue: 1,
-      component: createNumberField({ schema: numberSchema }),
     }),
   }
 
   outputs = {
     output: new Output({
-      name: "Output2",
+      name: "Output",
       type: numberSchema,
       observable: combineLatest([this.inputs.a, this.inputs.b]).pipe(
         map((inputs) => inputs.reduce((sum, value) => sum + value))
       ),
-      component: createNumberField({ schema: numberSchema }),
     }),
   }
-
-  accentColor = "#2596be"
-  icon = "MathSymbols"
 }
 
-export const addNode: NodeRegistration = {
-  id: "math/add",
+export const addNodeRegistraion = new NodeRegistration({
+  id: "string/add",
   name: "Add",
-  create: () => new AddNodeClass(),
-}
+  node: AddNode,
+  components: {
+    a: createNumberField({ schema: numberSchema }),
+    b: createNumberField({ schema: numberSchema }),
+    output: createNumberField({ schema: numberSchema }),
+  },
+  accentColor: "#2596be",
+  icon: "MathSymbols",
+})

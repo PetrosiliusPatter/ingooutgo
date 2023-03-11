@@ -1,26 +1,21 @@
-import { Input, Output, Node } from "@ingooutgo/core"
 import { NodeRegistration } from "@ingooutgo/react"
+import { Input, Output, Node } from "@nodl/core"
 import { combineLatest, map } from "rxjs"
 
 import { createNumberField } from "../../components/NumberField"
 import { createTextField } from "../../components/TextField"
 import { numberSchema, stringSchema } from "../../schemas"
-
-class RepeatNodeClass extends Node {
-  name: string = "Repeat"
-
+class RepeatNode extends Node {
   inputs = {
-    a: new Input({
+    repeatCount: new Input({
       name: "Repeat",
       type: numberSchema,
       defaultValue: 1,
-      component: createNumberField({ schema: numberSchema.int().min(0) }),
     }),
-    b: new Input({
+    text: new Input({
       name: "Text",
       type: stringSchema,
       defaultValue: "",
-      component: createTextField(),
     }),
   }
 
@@ -28,19 +23,22 @@ class RepeatNodeClass extends Node {
     output: new Output({
       name: "Output",
       type: stringSchema,
-      observable: combineLatest([this.inputs.a, this.inputs.b]).pipe(
+      observable: combineLatest([this.inputs.repeatCount, this.inputs.text]).pipe(
         map((inputs) => inputs[1].repeat(Math.floor(Math.max(0, inputs[0]))))
       ),
-      component: createTextField(),
     }),
   }
-
-  accentColor = "#c02626"
-  icon = "Quote"
 }
 
-export const repeatNode: NodeRegistration = {
-  id: "strings/repeat",
+export const repeatNodeRegistraion = new NodeRegistration({
+  id: "string/repeat",
   name: "Repeat",
-  create: () => new RepeatNodeClass(),
-}
+  node: RepeatNode,
+  components: {
+    repeatCount: createNumberField({ schema: numberSchema.int().min(0) }),
+    text: createTextField(),
+    output: createTextField(),
+  },
+  accentColor: "#c02626",
+  icon: "Quote",
+})

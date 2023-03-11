@@ -59,23 +59,24 @@ injectGlobal`
         Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif !important;
     }
 
-    #theme-select {
-      height: 2rem;
-    }
-
     .playground-wrapper {
       width: 100vw;
       height: calc(100vh - 2rem);
     }
 
     .debug-panel {
-      height: 2rem;
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      height: 2rem;
+      gap: 4px;
+      padding: 0 4px;
+      button {
+        height: calc(2rem - 8px);
+      }
     }
 
-    .simple-theme {
+    .ugly-theme {
       .ingo {
         --color-text: rgba(255, 255, 255, 0.9);
         --color-editor-background: #4d455d;

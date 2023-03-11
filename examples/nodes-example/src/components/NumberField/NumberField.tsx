@@ -1,4 +1,4 @@
-import { FieldComponent } from "@ingooutgo/core"
+import { FieldComponent } from "@ingooutgo/react"
 import * as React from "react"
 
 import { numberSchema } from "../../schemas"

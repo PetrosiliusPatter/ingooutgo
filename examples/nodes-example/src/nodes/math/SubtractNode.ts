@@ -1,25 +1,21 @@
-import { Input, Output, Node } from "@ingooutgo/core"
 import { NodeRegistration } from "@ingooutgo/react"
+import { Input, Output, Node } from "@nodl/core"
 import { combineLatest, map } from "rxjs"
 
 import { createNumberField } from "../../components/NumberField"
 import { numberSchema } from "../../schemas"
 
-class SubtractNodeClass extends Node {
-  name: string = "Subtract"
-
+class SubtractNode extends Node {
   inputs = {
     a: new Input({
       name: "A",
       type: numberSchema,
       defaultValue: 1,
-      component: createNumberField({ schema: numberSchema }),
     }),
     b: new Input({
       name: "B",
       type: numberSchema,
       defaultValue: 1,
-      component: createNumberField({ schema: numberSchema }),
     }),
   }
 
@@ -30,16 +26,19 @@ class SubtractNodeClass extends Node {
       observable: combineLatest([this.inputs.a, this.inputs.b]).pipe(
         map((inputs) => inputs.reduce((sum, value) => sum - value))
       ),
-      component: createNumberField({ schema: numberSchema }),
     }),
   }
-
-  accentColor = "#2596be"
-  icon = "MathSymbols"
 }
 
-export const subtractNode: NodeRegistration = {
-  id: "math/subtract",
+export const subtractNodeRegistration = new NodeRegistration({
+  id: "string/subtract",
   name: "Subtract",
-  create: () => new SubtractNodeClass(),
-}
+  node: SubtractNode,
+  components: {
+    a: createNumberField({ schema: numberSchema }),
+    b: createNumberField({ schema: numberSchema }),
+    output: createNumberField({ schema: numberSchema }),
+  },
+  accentColor: "#2596be",
+  icon: "MathSymbols",
+})

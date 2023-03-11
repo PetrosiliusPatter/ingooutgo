@@ -3,16 +3,18 @@ import * as React from "react"
 
 import { StoreContext } from "../../stores/EditorStore"
 import { Position } from "../../types/Misc"
-import { elToPos } from "../../utils/misc"
+import { elToPos, stopEvent } from "../../utils/misc"
 import { classNames } from "../../utils/styleUtils"
 import { StyledG } from "./styles"
+
+export type PathFunc = (start: Position, end: Position) => string
 
 type ConnectionProps = {
   container: HTMLElement
   connectionId?: string
   a: string
   b: string
-  pathFunc?: (start: Position, end: Position) => string
+  pathFunc?: PathFunc
 }
 
 const defaultPathFunc = (start: Position, end: Position) => {
@@ -83,28 +85,27 @@ export const Connection = observer(
       return (pathFunc ?? defaultPathFunc)(aPos, bPos)
     }, [aPos, bPos, pathFunc])
 
-    const handleOnClick = React.useCallback(() => {
-      const con = store.getAllConnections().find((c) => c.id === connectionId)
-      if (!con) return
+    const handleOnClick = React.useCallback<React.MouseEventHandler>(
+      (e) => {
+        stopEvent(e)
+        const con = store.getAllConnections().find((c) => c.id === connectionId)
+        if (!con) return
 
-      if (!store.isExtendingSelection) {
-        store.setSelectedConnections([con])
-        return
-      }
-      if (!isFixSelected) {
-        store.setSelectedConnections([...store.selectedConnections, con])
-        return
-      }
-      const newSel = store.selectedConnections.filter((c) => c.id !== connectionId)
-      store.setIsExtendingSelection(false)
-      store.setSelectedConnections(newSel)
-      store.setIsExtendingSelection(true)
-    }, [
-      connectionId,
-      isFixSelected,
-      store.isExtendingSelection,
-      store.selectedConnections,
-    ])
+        if (!store.isExtendingSelection) {
+          store.setSelectedConnections([con])
+          return
+        }
+        if (!isFixSelected) {
+          store.setSelectedConnections([...store.selectedConnections, con])
+          return
+        }
+        const newSel = store.selectedConnections.filter((c) => c.id !== connectionId)
+        store.setIsExtendingSelection(false)
+        store.setSelectedConnections(newSel)
+        store.setIsExtendingSelection(true)
+      },
+      [connectionId, isFixSelected, store.isExtendingSelection, store.selectedConnections]
+    )
 
     if (!aPos || !bPos) return <></>
     return (
@@ -115,7 +116,7 @@ export const Connection = observer(
           d={pathString}
           fill="none"
           strokeWidth="4"
-          onClick={handleOnClick}
+          onMouseDown={handleOnClick}
         />
       </StyledG>
     )

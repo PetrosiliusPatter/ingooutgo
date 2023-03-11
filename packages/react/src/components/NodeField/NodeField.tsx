@@ -1,9 +1,10 @@
-import { Input, Output, Direction } from "@ingooutgo/core"
+import { Input, Output } from "@nodl/core"
 import { observer } from "mobx-react-lite"
 import * as React from "react"
 import { z } from "zod"
 
 import { StoreContext } from "../../stores/EditorStore"
+import { Direction } from "../../types"
 import { socketToArcherKey, stopEvent } from "../../utils/misc"
 import { classNames } from "../../utils/styleUtils"
 import {
@@ -87,23 +88,26 @@ export const NodeField: React.FC<NodeFieldProps> = observer(({ nodeId, fieldId }
   const { store } = React.useContext(StoreContext)
 
   const nodeData = store.getNodeById(nodeId)
+  const nodeReg = store.getRegistrationById(nodeData?.data.registrationId || "")
 
-  const { direction, fieldData } = React.useMemo(() => {
-    const inputField: Input<any> | undefined = Object.values(nodeData?.inputs || {}).find(
-      (input) => input.id === fieldId
-    )
-    const outputField: Output<any> | undefined = Object.values(
+  const { direction, fieldData, fieldKey } = React.useMemo(() => {
+    const inputField: [string, Input<any>] | undefined = Object.entries(
+      nodeData?.inputs || {}
+    ).find(([, input]) => input.id === fieldId)
+    const outputField: [string, Output<any>] | undefined = Object.entries(
       nodeData?.outputs || {}
-    ).find((output) => output.id === fieldId)
+    ).find(([, output]) => output.id === fieldId)
 
     return inputField
       ? {
           direction: "incoming" as Direction,
-          fieldData: inputField,
+          fieldKey: inputField[0],
+          fieldData: inputField[1],
         }
       : {
           direction: "outgoing" as Direction,
-          fieldData: outputField,
+          fieldKey: outputField?.[0],
+          fieldData: outputField?.[1],
         }
   }, [nodeData])
 
@@ -124,8 +128,11 @@ export const NodeField: React.FC<NodeFieldProps> = observer(({ nodeId, fieldId }
 
   const [isCompFocused, setIsCompFocused] = React.useState(false)
   const renderedFieldComp = React.useMemo(() => {
-    if (!fieldData?.component) return
-    const FieldComp = fieldData.component
+    if (!nodeReg || !fieldData || !fieldKey) return
+
+    const FieldComp = nodeReg.components[fieldKey]
+    if (!FieldComp) return
+
     const disabled = direction === "outgoing" || fieldData.connected
 
     return (
@@ -154,7 +161,7 @@ export const NodeField: React.FC<NodeFieldProps> = observer(({ nodeId, fieldId }
         />
       </FieldComponentWrapper>
     )
-  }, [fieldData, fieldVal, direction, isCompFocused])
+  }, [nodeReg, fieldData, fieldVal, fieldKey, direction, isCompFocused])
 
   if (!fieldData) return <></>
   return (

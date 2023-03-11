@@ -9,7 +9,7 @@ import {
   useReactions,
 } from "../../utils/customHooks"
 import { classNames } from "../../utils/styleUtils"
-import { Connection } from "../Connection"
+import { Connection, PathFunc } from "../Connection"
 import { NodeBrowser } from "../NodeBrowser"
 import { NodeCard } from "../NodeCard/NodeCard"
 import { EditorContentWrapper, NodesContainer, EditorWrapper } from "./styles"
@@ -27,8 +27,9 @@ const Nodes = observer(() => {
 
 type ConnectionProps = {
   wrapperEl: HTMLElement | null
+  customPathFunc?: PathFunc
 }
-const Connections = observer(({ wrapperEl }: ConnectionProps) => {
+const Connections = observer(({ wrapperEl, customPathFunc }: ConnectionProps) => {
   const { store } = React.useContext(StoreContext)
 
   if (!wrapperEl) return null
@@ -45,6 +46,7 @@ const Connections = observer(({ wrapperEl }: ConnectionProps) => {
           connectionId={connection.id}
           a={connection.from.id}
           b={connection.to.id}
+          pathFunc={customPathFunc}
         />
       ))}
 
@@ -54,6 +56,7 @@ const Connections = observer(({ wrapperEl }: ConnectionProps) => {
           key={"currCon"}
           a={currConStart}
           b={currConEnd}
+          pathFunc={customPathFunc}
         />
       )}
     </svg>
@@ -63,66 +66,72 @@ const Connections = observer(({ wrapperEl }: ConnectionProps) => {
 type EditorProps = {
   store: EditorStore
   reactions?: Reactions
+  customPathFunc?: PathFunc
 }
 
-export const NodeEditor = observer(({ store, reactions }: EditorProps) => {
-  const wrapperRef = React.useRef<HTMLDivElement>(null)
-  // This is a hack to rerender once the ref is aquired
-  // https://stackoverflow.com/a/65942218/8506535
-  const [, setRefAquired] = React.useState(false)
-  React.useEffect(() => {
-    setRefAquired(true)
-  }, [])
+export const NodeEditor = observer(
+  ({ store, reactions, customPathFunc }: EditorProps) => {
+    const wrapperRef = React.useRef<HTMLDivElement>(null)
+    // This is a hack to rerender once the ref is aquired
+    // https://stackoverflow.com/a/65942218/8506535
+    const [, setRefAquired] = React.useState(false)
+    React.useEffect(() => {
+      setRefAquired(true)
+    }, [])
 
-  useKeyboardActions(store)
-  useReactions(store, reactions)
-  const { DragSelection } = useNodeSelection({ store, wrapperRef })
+    useKeyboardActions(store)
+    useReactions(store, reactions)
+    const { DragSelection } = useNodeSelection({ store, wrapperRef })
 
-  const onMouseMove = React.useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      const pos = {
-        x: e.nativeEvent.clientX,
-        y: e.nativeEvent.clientY,
-      }
-      if (wrapperRef.current) {
-        const wrapperBounds = wrapperRef.current.getBoundingClientRect()
-        pos.x -= wrapperBounds.left
-        pos.y -= wrapperBounds.top
-      }
-      store.setMousePosition(pos)
-    },
-    [wrapperRef.current, store]
-  )
+    const onMouseMove = React.useCallback(
+      (e: React.MouseEvent<HTMLElement>) => {
+        const pos = {
+          x: e.nativeEvent.clientX,
+          y: e.nativeEvent.clientY,
+        }
+        if (wrapperRef.current) {
+          const wrapperBounds = wrapperRef.current.getBoundingClientRect()
+          pos.x -= wrapperBounds.left
+          pos.y -= wrapperBounds.top
+        }
+        store.setMousePosition(pos)
+      },
+      [wrapperRef.current, store]
+    )
 
-  React.useEffect(() => {
-    if (!wrapperRef.current) return
-    const wrapper = wrapperRef.current
+    React.useEffect(() => {
+      if (!wrapperRef.current) return
+      const wrapper = wrapperRef.current
 
-    const confirmConnection = () => store.confirmConnection()
+      const confirmConnection = () => store.confirmConnection()
 
-    wrapper.removeEventListener("mouseup", confirmConnection)
-    wrapper.addEventListener("mouseup", confirmConnection)
-    return () => {
       wrapper.removeEventListener("mouseup", confirmConnection)
-    }
-  }, [store, wrapperRef.current])
+      wrapper.addEventListener("mouseup", confirmConnection)
+      return () => {
+        wrapper.removeEventListener("mouseup", confirmConnection)
+      }
+    }, [store, wrapperRef.current])
 
-  return (
-    <StoreContext.Provider value={{ store }}>
-      <EditorWrapper className={classNames.editorWrapper}>
-        <NodesContainer
-          onMouseMove={onMouseMove}
-          onMouseDown={() => store.setTempSelection()}
-          className={classNames.nodesContainer}
-        >
-          <EditorContentWrapper ref={wrapperRef}>
-            <DragSelection />
-            <Nodes />
-            <Connections wrapperEl={wrapperRef.current} />
-          </EditorContentWrapper>
-          <NodeBrowser />
-        </NodesContainer>
-      </EditorWrapper>
-    </StoreContext.Provider>
-  )
-})
+    return (
+      <StoreContext.Provider value={{ store }}>
+        <EditorWrapper className={classNames.editorWrapper}>
+          <NodesContainer
+            onMouseMove={onMouseMove}
+            onMouseDown={() => store.setTempSelection()}
+            className={classNames.nodesContainer}
+          >
+            <EditorContentWrapper ref={wrapperRef}>
+              <DragSelection />
+              <Nodes />
+              <Connections
+                wrapperEl={wrapperRef.current}
+                customPathFunc={customPathFunc}
+              />
+            </EditorContentWrapper>
+            <NodeBrowser />
+          </NodesContainer>
+        </EditorWrapper>
+      </StoreContext.Provider>
+    )
+  }
+)

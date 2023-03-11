@@ -1,5 +1,5 @@
-import { Direction } from "@ingooutgo/core"
 import styled from "styled-components"
+import { Direction } from "../../types"
 
 interface LabelStyleProps {
   textAlign?: "left" | "right" | "middle"

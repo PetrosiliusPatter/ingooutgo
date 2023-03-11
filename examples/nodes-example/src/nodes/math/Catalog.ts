@@ -1,11 +1,11 @@
 import { Catalog } from "@ingooutgo/react"
 
-import { addNode } from "./AddNode"
-import { subtractNode } from "./SubtractNode"
+import { addNodeRegistraion } from "./AddNode"
+import { subtractNodeRegistration } from "./SubtractNode"
 
 export const mathCatalog: Catalog = {
   label: "Math",
-  nodes: [addNode, subtractNode],
+  nodes: [addNodeRegistraion, subtractNodeRegistration],
   subcategories: {},
 }
 

@@ -1,14 +1,18 @@
-import { Connection, Node } from "@ingooutgo/core"
-import { reaction } from "mobx"
+import { Connection } from "@nodl/core"
+import { reaction, toJS } from "mobx"
 import { useEffect } from "react"
 
 import { EditorStore } from "../../stores/EditorStore"
+import { IngoNode } from "../../types"
 
 export type Reactions = {
   onConnection?: (connection: Connection<any>) => void
   onConnectionRemoval?: (connection: Connection<any>) => void
-  onNodeRemoval?: (node: Node) => void
-  onSelectionChanged?: (selectedNodes: Node[]) => void
+  onNodeRemoval?: (node: IngoNode) => void
+  onSelectionChanged?: (
+    selectedNodes: IngoNode[],
+    selectedConnections: Connection<any>[]
+  ) => void
 }
 
 export const useReactions = (store: EditorStore, reactions?: Reactions) => {
@@ -55,10 +59,21 @@ export const useReactions = (store: EditorStore, reactions?: Reactions) => {
 
   useEffect(() => {
     return reaction(
-      () => store.selectedNodes,
-      (selectedNodes, prevSelectedNodes) => {
-        if (selectedNodes.length !== prevSelectedNodes.length) {
-          reactions?.onSelectionChanged?.(selectedNodes)
+      () => ({
+        nodes: store.selectedNodes,
+        connections: store.selectedConnections,
+      }),
+      ({ nodes, connections }, { nodes: prevNodes, connections: prevConnections }) => {
+        const differentNodes =
+          nodes.length !== prevNodes.length ||
+          nodes.some((node) => prevNodes.find((n) => n.id !== node.id))
+        const differentConnections =
+          connections.length !== prevConnections.length ||
+          connections.some((connection) =>
+            prevConnections.find((c) => c.id !== connection.id)
+          )
+        if (differentNodes || differentConnections) {
+          reactions?.onSelectionChanged?.(toJS(nodes), toJS(connections))
         }
       }
     )
