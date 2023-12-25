@@ -23,7 +23,7 @@
 <h3 align="center">IngoOutgo</h3>
 
 <p align="center">
-    Graph Node Editor in React!
+    Node Graph Editor in React!
     <br />
     <a href="https://petrosiliuspatter.github.io/ingooutgo/"><strong>View Demo »</strong></a>
     <br />
