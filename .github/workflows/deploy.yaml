@@ -49,6 +49,8 @@ jobs:
       # Build  
       - name: Build package 🏗️
         run: deno run -A tasks/build-npm.ts $RELEASE_VERSION
+      - name: Build demo nodes package 🏗️
+        run: deno run -A examples/nodes-example/tasks/build-npm.ts
       - name: Install dependencies 📦
         run: npm install
         working-directory: examples/usage-example
