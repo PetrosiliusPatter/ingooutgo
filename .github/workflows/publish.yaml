@@ -1,0 +1,75 @@
+name: Publish package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: New Version
+        required: true
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "publish"
+  cancel-in-progress: false
+
+jobs:
+  # Build Job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # System Setup
+      - name: Checkout 🔄
+        uses: actions/checkout@v3
+      - name: Setup Deno 🦕
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: vx.x.x
+      # Build  
+      - name: Build Package 🏗️
+        run: deno run -A tasks/build-npm.ts ${{ inputs.version }}
+      - name: Upload Build Artifact 📤
+        uses: actions/upload-artifact@v3 
+        with:
+          name: built-package
+          path: build/npm
+  
+  # Publish Job
+  publish-npm:
+    permissions:
+      contents: write
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifact 📥
+        uses: actions/download-artifact@v3
+        with:
+          name: built-package
+          path: build/npm
+      # Publish to NPM
+      - name: Setup Node 🟩
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          working-directory: build/npm
+      - name: Run CI 🔄
+        run: npm ci
+        working-directory: build/npm
+      - name: Publish 🚀
+        run: npm publish
+        working-directory: build/npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_SECRET }}
+      # Create tag for release (also publishes to deno)
+      - name: Tag Commit 🏷️
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ inputs.version }}',
+              sha: context.sha
+            })

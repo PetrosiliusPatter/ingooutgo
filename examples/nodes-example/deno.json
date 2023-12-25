@@ -1,0 +1,17 @@
+{
+  "fmt": {
+    "semiColons": false,
+    "lineWidth": 90,
+    "indentWidth": 2
+  },
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true,
+    "lib": ["es2021", "DOM"]
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
+  },
+  "exclude": ["build", "examples"]
+}

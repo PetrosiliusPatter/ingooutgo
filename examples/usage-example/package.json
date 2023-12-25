@@ -1,0 +1,35 @@
+{
+  "name": "example",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.3.2",
+    "@tabler/icons-react": "^2.44.0",
+    "chart.js": "^4.4.0",
+    "ingooutgo": "file:../../build/npm",
+    "ingooutgo-example-nodes": "file:../nodes-example/build/npm",
+    "next": "14.0.2",
+    "react": "^18",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18"
+  },
+  "peerDependencies": {
+    "@emotion/styled": "^11.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.2",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "typescript": "^5"
+  }
+}
