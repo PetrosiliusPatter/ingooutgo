@@ -129,7 +129,7 @@ import { Catalog, EditorStore, NodeEditor } from "ingooutgo"
 
 ### Basic Usage
 
-See the [Nodes Readme](examples\nodes-example\README.md) for info on how to create Nodes.
+See the [Nodes Readme](examples/nodes-example/README.md) for info on how to create Nodes.
 
 ```ts
 // See example/src/app/page.tsx for full example
