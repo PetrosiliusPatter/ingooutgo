@@ -29,24 +29,6 @@ jobs:
       # Build  
       - name: Build Package 🏗️
         run: deno run -A tasks/build-npm.ts ${{ inputs.version }}
-      - name: Upload Build Artifact 📤
-        uses: actions/upload-artifact@v3 
-        with:
-          name: built-package
-          path: build/npm
-  
-  # Publish Job
-  publish-npm:
-    permissions:
-      contents: write
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Build Artifact 📥
-        uses: actions/download-artifact@v3
-        with:
-          name: built-package
-          path: build/npm
       # Publish to NPM
       - name: Setup Node 🟩
         uses: actions/setup-node@v3
