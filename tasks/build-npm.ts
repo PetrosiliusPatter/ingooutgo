@@ -48,7 +48,7 @@ await build({
   package: {
     name: "ingooutgo",
     version,
-    description: "Custom UI for @nodl/core",
+    description: "Node Graph Editor in React!",
     license: "MIT",
     author: "PetrosiliusPatter",
     repository: {

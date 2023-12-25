@@ -39,7 +39,7 @@ jobs:
       - name: Setup Node 🟩
         uses: actions/setup-node@v3
         with: 
-          working-directory: example
+          working-directory: examples/usage-example
       - name: Setup Deno 🦕
         uses: denoland/setup-deno@v1
         with:
@@ -51,14 +51,14 @@ jobs:
         run: deno run -A tasks/build-npm.ts $RELEASE_VERSION
       - name: Install dependencies 📦
         run: npm install
-        working-directory: example
+        working-directory: examples/usage-example
       - name: Build with Next.js 🏗️
         run: npm run build
-        working-directory: example
+        working-directory: examples/usage-example
       - name: Upload pages artifact 📤
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./example/out
+          path: ./examples/usage-example/out
       - name: Deploy to GitHub Pages 🚀
         id: deployment
         uses: actions/deploy-pages@v2
