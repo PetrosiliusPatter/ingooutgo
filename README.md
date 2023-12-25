@@ -80,14 +80,14 @@ Node logic, but with a completely new UI and some other new features.
 
 - Nodes can be defined with accent color and a neat icon, and Sockets can have their own
   UI components
-- Node can be copied and pasted, even across different instances of the editor
 - The UI is themable, using classnames and css variables, and even customized rendering of
   connections (see [Styling](#styling))
+- Nodes can be (de-)serialized, allowing for saving and loading of graphs
 - Better UX:
-  - Nodes can be dragged not just by their title bar
+  - Node can be copied and pasted, even across different instances of the editor
   - When connecting Nodes, the connection snaps to compatible Sockets
   - Built-in Node Browser
-  - (De-)Serialization of the node graph
+  - Nodes can be dragged not just by their title bar
   - And more improvements
 
 #### Built With
