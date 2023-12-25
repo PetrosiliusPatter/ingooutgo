@@ -25,7 +25,7 @@
 <p align="center">
     Graph Node Editor in React!
     <br />
-    <a href="https://petrosiliuspatter.github.io/use-worker-timer/"><strong>View Demo »</strong></a>
+    <a href="https://petrosiliuspatter.github.io/ingooutgo/"><strong>View Demo »</strong></a>
     <br />
     <br />
     <a href="https://github.com/PetrosiliusPatter/ingooutgo/issues">Report Bug</a>
