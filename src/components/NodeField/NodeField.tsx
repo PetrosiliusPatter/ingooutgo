@@ -101,25 +101,29 @@ export const NodeField: FC<NodeFieldProps> = observer(
     const nodeData = store?.getNodeById(nodeId)
     const nodeReg = store?.getRegistrationById(nodeData?.data.registrationId ?? "")
 
-    const { direction, fieldData, fieldKey } = useMemo(() => {
+    const { direction, fieldData, fieldKey, noSocket } = useMemo(() => {
       const inputField = Object.entries(nodeData?.inputs ?? {}).find(([, input]) =>
         input.id === fieldId
       )
-      const outputField = Object.entries(nodeData?.outputs ?? {}).find(([, output]) =>
-        output.id === fieldId
-      )
 
-      return inputField
-        ? {
+      if (inputField) {
+        return {
           direction: "incoming" as const,
           fieldKey: inputField[0],
           fieldData: inputField[1],
+          noSocket: !!nodeReg?.fieldExtras[inputField[0]]?.noSocket,
         }
-        : {
-          direction: "outgoing" as const,
-          fieldKey: outputField?.[0],
-          fieldData: outputField?.[1],
-        }
+      }
+
+      const outputField = Object.entries(nodeData?.outputs ?? {}).find(([, output]) =>
+        output.id === fieldId
+      )
+      return {
+        direction: "outgoing" as const,
+        fieldKey: outputField?.[0],
+        fieldData: outputField?.[1],
+        noSocket: !!nodeReg?.fieldExtras[outputField?.[0] ?? ""]?.noSocket,
+      }
     }, [nodeData, fieldId])
 
     const [fieldVal, setFieldVal] = useState<unknown>()
@@ -138,7 +142,8 @@ export const NodeField: FC<NodeFieldProps> = observer(
     const renderedFieldComp = useMemo(() => {
       if (!nodeReg || !fieldData || !fieldKey) return
 
-      const FieldComp = nodeReg.components[fieldKey]
+      const fieldExtras = nodeReg.fieldExtras[fieldKey]
+      const FieldComp = fieldExtras?.component
       if (!FieldComp) return
 
       const disabled = direction === "outgoing" || fieldData.connected
@@ -176,16 +181,18 @@ export const NodeField: FC<NodeFieldProps> = observer(
         >
           {fieldData.name}
         </FieldLabel>
-        <FieldType
-          className={classNames.nodeFieldType}
-          textAlign={direction === "incoming" ? "left" : "right"}
-        >
-          {fieldData.type.name}
-        </FieldType>
+        {!noSocket && (
+          <FieldType
+            className={classNames.nodeFieldType}
+            textAlign={direction === "incoming" ? "left" : "right"}
+          >
+            {fieldData.type.name}
+          </FieldType>
+        )}
         {renderedFieldComp}
-        {fieldData
-          ? <ConnectionSocket direction={direction} nodeId={nodeId} fieldId={fieldId} />
-          : <></>}
+        {!noSocket && (
+          <ConnectionSocket direction={direction} nodeId={nodeId} fieldId={fieldId} />
+        )}
       </FieldWrapper>
     )
   },

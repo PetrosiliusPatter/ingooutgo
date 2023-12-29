@@ -11,8 +11,8 @@
 
 ## Info
 
-- At the core, IngoOutgo uses [Nodl](https://github.com/newfrgmnt/nodl) for its
-  `Nodes`. See their documentation for more information.
+- At the core, IngoOutgo uses [Nodl](https://github.com/newfrgmnt/nodl) for its `Nodes`.
+  See their documentation for more information.
 - In this example, we'll write a `NodeRegistration` for a simple `Node` that repeats a
   string a given number of times. Both the original string and the number of repetitions
   will be inputs, and the repeated string will be the output.
@@ -83,10 +83,10 @@ export const repeatNodeRegistraion = new NodeRegistration({
   id: "ingooutgo/nodes-example/string/repeat",
   name: "Repeat",
   node: RepeatNode,
-  components: {
-    repeatCount: createNumberField({ zodNumber: z.number().int().min(0) }),
-    text: TextField,
-    output: TextField,
+  fieldExtras: {
+    repeatCount: { component: createNumberField({ zodNumber: z.number().int().min(0) }) },
+    text: { component: TextField },
+    output: { component: TextField },
   },
   accentColor: "#c02626",
   icon: "Quote",

@@ -34,10 +34,10 @@ export const concatNodeRegistraion = new NodeRegistration({
   id: "ingooutgo/nodes-example/string/concat",
   name: "Concat",
   node: ConcatNodeClass,
-  components: {
-    a: TextField,
-    b: TextField,
-    output: TextField,
+  fieldExtras: {
+    a: { component: TextField },
+    b: { component: TextField },
+    output: { component: TextField, noSocket: true }, // noSocket means that this field cannot be connected using the UI!
   },
   accentColor: "#c02626",
   icon: "Quote",

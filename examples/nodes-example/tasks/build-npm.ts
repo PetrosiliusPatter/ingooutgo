@@ -33,6 +33,8 @@ await build({
       version: "^1.0.9",
       peerDependency: true,
     },
+    // To prevent type errors when using your nodes package, you might want to add
+    // a mapping for the ingooutgo package as well, and make it a peerDependency.
   },
   package: {
     name: "ingooutgo-example-nodes",

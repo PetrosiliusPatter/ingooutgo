@@ -7,7 +7,6 @@ import {InfoPanel} from './components/InfoPanel'
 import {DemoWrapper} from './styles'
 import {MantineProvider} from '@mantine/core'
 
-// core styles are required for all packages
 import '@mantine/core/styles.css'
 
 const nodeCatalog: Catalog = {

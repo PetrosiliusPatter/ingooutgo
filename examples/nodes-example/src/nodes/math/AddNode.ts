@@ -35,10 +35,10 @@ export const addNodeRegistraion = new NodeRegistration({
   id: "ingooutgo/nodes-example/math/add",
   name: "Add",
   node: AddNode,
-  components: {
-    a: createNumberField({ zodNumber: z.number() }),
-    b: createNumberField({ zodNumber: z.number() }),
-    output: createNumberField({ zodNumber: z.number() }),
+  fieldExtras: {
+    a: { component: createNumberField({ zodNumber: z.number() }) },
+    b: { component: createNumberField({ zodNumber: z.number() }) },
+    output: { component: createNumberField({ zodNumber: z.number() }) },
   },
   accentColor: "#2596be",
   icon: "MathSymbols",

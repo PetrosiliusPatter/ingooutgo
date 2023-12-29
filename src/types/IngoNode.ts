@@ -34,30 +34,35 @@ export type FieldComponentProps<Z extends z.ZodType> = {
 
 export type FieldComponent<Z extends z.ZodType> = FC<FieldComponentProps<Z>>
 
+export type FieldExtras = {
+  component: FieldComponent<any>
+  noSocket?: boolean
+}
+
 type RegistrationParams<N extends Node = Node> = {
   id: string
   name: string
   node: new () => N
-  components?: Record<string, FieldComponent<any>>
+  fieldExtras?: Record<string, FieldExtras>
   accentColor?: string
   icon?: string
 }
 export class NodeRegistration<N extends Node = Node> {
   public registrationId: string
   public name: string
-  public components: Record<string, FieldComponent<any>>
+  public fieldExtras: Record<string, FieldExtras>
 
   public accentColor?: string
   public icon?: string
 
   node: new () => N
 
-  constructor({ id, name, node, components, accentColor, icon }: RegistrationParams<N>) {
+  constructor({ id, name, node, fieldExtras, accentColor, icon }: RegistrationParams<N>) {
     this.registrationId = id
     this.name = name
 
     this.node = node
-    this.components = components || {}
+    this.fieldExtras = fieldExtras || {}
 
     this.accentColor = accentColor
     this.icon = icon

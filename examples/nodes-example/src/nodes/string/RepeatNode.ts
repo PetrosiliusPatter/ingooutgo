@@ -41,10 +41,10 @@ export const repeatNodeRegistraion = new NodeRegistration({
   id: "ingooutgo/nodes-example/string/repeat",
   name: "Repeat",
   node: RepeatNode,
-  components: {
-    repeatCount: createNumberField({ zodNumber: z.number().int().min(0) }),
-    text: TextField,
-    output: TextField,
+  fieldExtras: {
+    repeatCount: { component: createNumberField({ zodNumber: z.number().int().min(0) }) },
+    text: { component: TextField },
+    output: { component: TextField },
   },
   accentColor: "#c02626",
   icon: "Quote",
