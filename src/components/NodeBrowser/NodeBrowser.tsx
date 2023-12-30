@@ -87,7 +87,7 @@ export const NodeBrowser = observer(() => {
 
   const currSubCatalog = useMemo(() => {
     if (!store) return
-    const currCatalog: Catalog = history.reverse().reduce((acc, curr) => {
+    const currCatalog: Catalog = [...history].reverse().reduce((acc, curr) => {
       const nextCatalog = acc.subcategories[curr]
       if (!nextCatalog) {
         throw Error("Invalid history")
