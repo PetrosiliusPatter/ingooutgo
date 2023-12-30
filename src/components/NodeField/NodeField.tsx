@@ -166,7 +166,7 @@ export const NodeField: FC<NodeFieldProps> = observer(
             }}
             direction={direction}
             disabled={disabled}
-            schema={fieldData.type}
+            schema={fieldData.type.validator}
           />
         </FieldComponentWrapper>
       )

@@ -35,22 +35,26 @@ export type FieldComponentProps<Z extends z.ZodType> = {
 export type FieldComponent<Z extends z.ZodType> = FC<FieldComponentProps<Z>>
 
 export type FieldExtras = {
-  component: FieldComponent<any>
+  component?: FieldComponent<any>
   noSocket?: boolean
+}
+
+type FieldExtrasForNode<N extends Node> = {
+  [K in (keyof N["inputs"]) | (keyof N["outputs"])]?: FieldExtras
 }
 
 type RegistrationParams<N extends Node = Node> = {
   id: string
   name: string
   node: new () => N
-  fieldExtras?: Record<string, FieldExtras>
+  fieldExtras?: FieldExtrasForNode<N>
   accentColor?: string
   icon?: string
 }
 export class NodeRegistration<N extends Node = Node> {
   public registrationId: string
   public name: string
-  public fieldExtras: Record<string, FieldExtras>
+  public fieldExtras: FieldExtrasForNode<N>
 
   public accentColor?: string
   public icon?: string
