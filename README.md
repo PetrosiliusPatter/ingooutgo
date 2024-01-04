@@ -94,7 +94,7 @@ Node logic, but with a completely new UI and some other new features.
 
 [![Deno][Deno]][Deno-url] [![React][React.js]][React-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Usage without React
 
 ## Getting Started
 
@@ -121,7 +121,7 @@ npm install ingooutgo
 import { Catalog, EditorStore, NodeEditor } from "ingooutgo"
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Usage without React
 
 <!-- USAGE EXAMPLES -->
 
@@ -213,7 +213,14 @@ I expose two utility functions for (de-)serializing the editor.
 - When loading a serialized a `Node` into an `EditorStore`, the `EditorStore` needs to
   have a matching `NodeRegistration`. Otherwise, it will be ignored.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Usage without React
+
+You can also use the editor without React, by using the `EditorStore` directly. See
+`deno-sandbox/serialization-tests.ts` as an example.\
+One usecase would be to automate inputs, once you have built a graph that you are happy
+with.\
+You can build a graph using the React UI, serialize it by selecting and copying the nodes,
+and then paste it into a script.
 
 ### Styling
 
@@ -293,7 +300,7 @@ And these are the classnames for the components:
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Usage without React
 
 <!-- CONTACT -->
 
@@ -304,7 +311,7 @@ PetrosiliusPatter - PetrosiliusPatter@proton.me
 Project Link:
 [https://github.com/PetrosiliusPatter/ingooutgo](https://github.com/PetrosiliusPatter/ingooutgo)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Usage without React
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

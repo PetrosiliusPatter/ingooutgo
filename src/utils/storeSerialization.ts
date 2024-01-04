@@ -21,7 +21,7 @@ export const serializeAllNodes = (store: EditorStore) => {
 
 export const serializeNodes = (
   nodes: IngoNode[],
-  positionsForNodes: Record<IngoNode["id"], Position | undefined>,
+  positionsForNodes?: Record<IngoNode["id"], Position | undefined>,
 ) => {
   const serializedNodes: SerializedNode[] = nodes
     .map((node) => ({
@@ -29,12 +29,16 @@ export const serializeNodes = (
         (acc, [name, input]) => ({ ...acc, [input.id]: name }),
         {} as Record<string, string>,
       ),
+      inputValues: Object.entries(node.inputs).reduce(
+        (acc, [name, input]) => ({ ...acc, [name]: input.value }),
+        {} as Record<string, any>,
+      ),
       outputNames: Object.entries(node.outputs).reduce(
         (acc, [name, output]) => ({ ...acc, [output.id]: name }),
         {} as Record<string, string>,
       ),
       data: toJS(node.data),
-      position: toJS(positionsForNodes[node.id]) ?? { x: 0, y: 0 },
+      position: positionsForNodes?.[node.id] ?? { x: 0, y: 0 },
       outConnections: node.connections.reduce((acc, connection) => {
         const outputList = acc[connection.from.name] ?? []
         return { ...acc, [connection.from.name]: [...outputList, connection.to.id] }
@@ -63,6 +67,10 @@ export const loadSerializedNodes = (
 
     const node = nodeReg.createNode()
     node.data = serializedNode.data
+
+    Object.entries(serializedNode.inputValues).forEach(([inputName, value]) =>
+      node.inputs[inputName]?.next(value)
+    )
 
     return { serializedNode, node }
   }).filter(isDefined)

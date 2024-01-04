@@ -24,9 +24,8 @@
 
 - To create a `NodeRegistration`, you first need to create a `Node`. It defines the
   `Inputs` and `Outputs`, together with the `Node`'s logic.
-- It is worth noting that only `Inputs` and `Outputs` of the very same `Schema` can be
-  connected. For this reason, you should place them in a separate file, to be shared by
-  all your `Nodes`.
+- It is worth noting that only `Inputs` and `Outputs` with `Schemas` of the same name can be
+  connected. I recommend you create the Schemas once in a seperate file, and have all `Nodes` share them.
 - See `src\nodes\string\RepeatNode.ts`.
 
 ```ts

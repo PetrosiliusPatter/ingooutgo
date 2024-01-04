@@ -1,7 +1,6 @@
 import { makeAutoObservable } from "../deps/mobx.ts"
 import { Connection, Input, Output } from "../deps/nodl.ts"
 import { createContext } from "../deps/react.ts"
-import { z } from "../deps/zod.ts"
 
 import { Catalog, IngoNode, NodeRegistration } from "../types/IngoNode.ts"
 import { ConnectionIds, Position, SocketId } from "../types/Misc.ts"
@@ -76,9 +75,9 @@ export class EditorStore {
   }
 
   /** Add Node at position */
-  addNode = (node: IngoNode, position: Position) => {
+  addNode = (node: IngoNode, position?: Position) => {
     this.nodes.push(node)
-    this.nodePositions.set(node.id, position)
+    this.nodePositions.set(node.id, position ?? { x: 0, y: 0 })
   }
 
   /** Remove a Node and all it's Connections */
@@ -313,19 +312,12 @@ export class EditorStore {
     const socketBDir = "defaultValue" in socketB ? "in" : "out"
     if (socketADir === socketBDir) return false
 
-    /* This would be better, but as Nodl is doing a naive compatibility check itself, this won't work.
-    const aSchema = zodToJsonSchema(socketA.type, "schema").$schema
-    const bSchema = zodToJsonSchema(socketB.type, "schema").$schema
-    if (aSchema !== bSchema) return false */
-    const aSchema: z.ZodType = socketA.type.validator
-    const bSchema: z.ZodType = socketB.type.validator
-    if (aSchema != bSchema) return false
-
     const [outSocket, inSocket] = (
       socketADir === "out" ? [socketA, socketB] : [socketB, socketA]
     ) as [Output<any>, Input<any>]
-
     if (inSocket.connection) return false
+
+    if (!Connection.isTypeCompatible(outSocket, inSocket)) return false
 
     const inNode = this.getNodeBySocketId(inSocket.id)
     if (!inNode) return false

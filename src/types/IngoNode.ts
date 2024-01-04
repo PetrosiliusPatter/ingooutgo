@@ -8,15 +8,25 @@ export type IngoData = {
   registrationId?: string
 }
 
-export abstract class IngoNode<TData extends IngoData = IngoData> extends Node<TData> {}
+export abstract class IngoNode<
+  TData extends IngoData = IngoData,
+  I extends Node["inputs"] = Node["inputs"],
+  O extends Node["outputs"] = Node["outputs"],
+> extends Node<TData> {
+  abstract inputs: I
+  abstract outputs: O
+}
 
-type IngoNodeFromNodlNode<N extends Node> = IngoNode<
-  (N extends Node<infer C> ? C : Record<string, any>) & IngoData
->
+export type IngoNodeFromRegistration<R extends NodeRegistration> = R extends
+  NodeRegistration<
+    infer N
+  > ? IngoNode<N["data"], N["inputs"], N["outputs"]>
+  : never
 
 export const SerializedNodeSchema = z.object({
   inputNames: z.record(z.string()), // From socket id to name
   outputNames: z.record(z.string()), // From socket id to name
+  inputValues: z.record(z.any()), // From socket name to value
   data: z.record(z.any()),
   position: PositionSchema,
   outConnections: z.record(z.array(z.string())), // From output name to list of socket ids
@@ -51,6 +61,9 @@ type RegistrationParams<N extends Node = Node> = {
   accentColor?: string
   icon?: string
 }
+
+type DataFromNodlNode<N extends Node> = N extends Node<infer C> ? C : Record<string, any>
+
 export class NodeRegistration<N extends Node = Node> {
   public registrationId: string
   public name: string
@@ -72,13 +85,17 @@ export class NodeRegistration<N extends Node = Node> {
     this.icon = icon
   }
 
-  createNode(): IngoNodeFromNodlNode<N> {
-    const newNode = new this.node() as unknown as IngoNodeFromNodlNode<N> // TODO: this doesn't look right
+  createNode(): IngoNode<DataFromNodlNode<N> & IngoData, N["inputs"], N["outputs"]> {
+    const newNode = new this.node()
 
     newNode.name = this.name
     newNode.data.registrationId = this.registrationId
 
-    return newNode
+    return newNode as unknown as IngoNode<
+      DataFromNodlNode<N> & IngoData,
+      N["inputs"],
+      N["outputs"]
+    > // TODO: this doesn't look right
   }
 }
 
