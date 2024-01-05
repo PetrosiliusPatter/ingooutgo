@@ -26,6 +26,7 @@ import {
   EditorWrapper,
   LayerWrapper,
   NodesContainer,
+  PasteFix,
 } from "./styles.ts"
 
 const Nodes = observer(() => {
@@ -93,15 +94,22 @@ export const NodeEditor = observer(
 
     // This is a hack to rerender once the ref is aquired
     // https://stackoverflow.com/a/65942218/8506535
-    const [, setRefAquired] = useState(false)
+    const [refAquired, setRefAquired] = useState(false)
+
+    // This is a bit of a hack to fix the onPaste event.
+    // It will only fire if an input element down the tree has been focused.
+    const pasteFixRef = useRef<HTMLInputElement | null>(null)
+    const [pasteFixDisabled, setPasteFixDisabled] = useState(false)
     useEffect(() => {
       setRefAquired(true)
+      pasteFixRef.current?.focus()
+      setPasteFixDisabled(true)
     }, [])
 
     useKeyboardActions(store)
     useReactions(store, reactions)
-    const { DragSelection } = useNodeSelection({ store, wrapperRef, nodesRef })
 
+    const { DragSelection } = useNodeSelection({ store, wrapperRef, nodesRef })
     const { copyNodes, pasteNodes } = useCopyPasteNodes(store)
 
     const onMouseMove = useCallback(
@@ -158,6 +166,7 @@ export const NodeEditor = observer(
               </LayerWrapper>
             </EditorContentWrapper>
             <NodeBrowser />
+            <PasteFix ref={pasteFixRef} disabled={pasteFixDisabled} />
           </NodesContainer>
         </EditorWrapper>
       </StoreContext.Provider>

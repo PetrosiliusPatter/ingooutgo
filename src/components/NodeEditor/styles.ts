@@ -72,3 +72,10 @@ export const LayerWrapper = styled.div`
   top: 0;
   left: 0;
 `
+
+export const PasteFix = styled.input`
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  z-index: -1000;
+`
